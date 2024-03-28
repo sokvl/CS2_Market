@@ -1,0 +1,10 @@
+README.Docker.md
+
+backend/.env
+backend/cs2market_env/
+backend/cs2market_backend/__pycache__/
+backend/api\__pycache__/
+backend/api\__pycache__//README.Docker.md
+
+frontend/node_modules
+frontend/README.Docker.md
