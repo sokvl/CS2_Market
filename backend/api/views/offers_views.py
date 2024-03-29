@@ -3,5 +3,5 @@ from rest_framework.decorators import api_view
 
 @api_view(['GET'])
 def testget(request):
-    test = {'hello': 'worlds'}
+    test = {'hello': 'worldfffs'}
     return Response(test)
