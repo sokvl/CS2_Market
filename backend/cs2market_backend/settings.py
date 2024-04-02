@@ -15,6 +15,10 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
+#Login
+LOGIN_REDIRECT_URL = '/'
+SOCIAL_AUTH_STEAM_API_KEY = os.getenv('STEAMAPI_KEY')
+#ENV
 DB_HOST = os.getenv('DB_HOST')
 DB_PASSWORD = os.getenv('DB_PWD')
 DB_USER = os.getenv('DB_USER')
@@ -43,8 +47,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework'
+    'rest_framework',
+    'social_django'
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.steam.SteamOpenId',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
