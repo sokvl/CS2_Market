@@ -15,6 +15,10 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
+#Login
+LOGIN_REDIRECT_URL = '/'
+SOCIAL_AUTH_STEAM_API_KEY = os.getenv('STEAMAPI_KEY')
+#ENV
 DB_HOST = os.getenv('DB_HOST')
 DB_PASSWORD = os.getenv('DB_PWD')
 DB_USER = os.getenv('DB_USER')
@@ -56,7 +60,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
+
+ABSOLUTE_URL='127.0.0.1:8000'
+SECURE_SSL_REDIRECT = False
 
 ROOT_URLCONF = 'cs2market_backend.urls'
 
