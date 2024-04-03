@@ -10,6 +10,7 @@ class Offer(models.Model):
     is_active = models.BooleanField(default=True)
     item_id = models.IntegerField()    # In future it will be connection to item model
     price = models.FloatField()
+    quantity = models.IntegerField(default = 0)
 
     class Meta:
         db_table = 'offer'
