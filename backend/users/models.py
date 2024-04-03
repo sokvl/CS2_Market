@@ -8,5 +8,16 @@ class User(models.Model):
     steam_tradelink = models.TextField()
     is_admin = models.BooleanField()
 
+
     class Meta:
         db_table = 'user'
+
+
+class Wallet(models.Model):
+    wallet_id = models.IntegerField(primary_key=True)
+    user_id = models.OneToOneField(User, on_delete=models.CASCADE)
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    
+    class Meta:
+        db_table = 'wallet'
+    
