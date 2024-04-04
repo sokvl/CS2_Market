@@ -1,10 +1,10 @@
 from django.db import models
 from django.utils import timezone
-from users.models import User
+from django.contrib.auth import get_user_model
 
 class Offer(models.Model):
-    offer_id = models.IntegerField(primary_key=True)
-    owner_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    offer_id = models.AutoField(primary_key=True)
+    owner_id = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     creation_date = models.DateField(default=timezone.now)
     sale_date = models.DateField(null=True)
     is_active = models.BooleanField(default=True)
@@ -13,4 +13,4 @@ class Offer(models.Model):
     quantity = models.IntegerField(default = 0)
 
     class Meta:
-        db_table = 'offer'
+        db_table = 'Offers'
