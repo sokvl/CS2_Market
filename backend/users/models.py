@@ -1,13 +1,13 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
-class User(models.Model):
+class User(AbstractUser):
     user_id = models.IntegerField(primary_key=True)
-    username = models.TextField()
     steam_id = models.TextField()
     avatar_url = models.TextField()
     steam_tradelink = models.TextField()
     is_admin = models.BooleanField()
-
+    password = None
 
     class Meta:
         db_table = 'user'
