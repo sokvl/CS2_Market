@@ -8,7 +8,7 @@ class User(AbstractUser):
     avatar_url = models.TextField()
     steam_tradelink = models.TextField(blank=True)
     is_admin = models.BooleanField(default=False)
-    password = None
+    password = models.CharField(max_length=128, blank=True, default="")
 
     class Meta:
         db_table = 'Users'
