@@ -22,8 +22,8 @@ def steam_login_callback(request):
             params={
                 'id': user,
                 'key': STEAMAPI_KEY
-                },
-        )
+            }
+            )
         response = response.json()
 
         serializer = UserSerializer(data={
@@ -32,8 +32,11 @@ def steam_login_callback(request):
             'avatar_url': response['avatar'],
             'is_admin': False
         })
+        print(serializer)
         if serializer.is_valid():
             serializer.save()
-            return Response({'message': 'Database error'}, status=500)
+            return redirect('/')
+        
+        return redirect('/negro')
 
-        return redirect('/')
+        
