@@ -24,3 +24,15 @@ def create_user(request):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response({'error': 'This method is not acceptable'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+@api_view(['PATCH'])
+def edit_user(request, steam_id):
+    try:
+        user = get_user_model().objects.get(steam_id=steam_id)
+    except get_user_model().DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    serializer = UserSerializer(user, data=request.data, partial=True) 
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
