@@ -10,12 +10,11 @@ def steam_login(request):
     return auth('/callback', use_ssl=False)
 
 def steam_login_callback(request):
-    print("HWD", request)
     user = get_uid(request.GET)
     if user is None:
         return redirect('/failed')
     else:
-        #TODO: Refactor to signals.py
+        #TODO: Refactor signals
         STEAMAPI_KEY = os.getenv('STEAMAPI_KEY')
         response = requests.get(
             'http://steamwebapi.com/steam/api/profile',
@@ -23,7 +22,7 @@ def steam_login_callback(request):
                 'id': user,
                 'key': STEAMAPI_KEY
             }
-            )
+        )
         response = response.json()
 
         serializer = UserSerializer(data={
@@ -34,9 +33,10 @@ def steam_login_callback(request):
         })
         print(serializer)
         if serializer.is_valid():
+            print("Serializer")
             serializer.save()
-            return redirect('/')
+            return redirect(f'/users/{user}')
         
-        return redirect('/negro')
+        return redirect('/fail')
 
         
