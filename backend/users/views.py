@@ -15,15 +15,12 @@ def get_user(request, steam_id):
 
 @api_view(['POST'])
 def create_user(request):
-    if request.method == 'POST':
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    else:
-        return Response({'error': 'This method is not acceptable'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 @api_view(['PATCH'])
 def edit_user(request, steam_id):

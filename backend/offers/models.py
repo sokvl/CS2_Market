@@ -10,7 +10,7 @@ class Offer(models.Model):
     is_active = models.BooleanField(default=True)
     item_id = models.OneToOneField('Item', on_delete=models.CASCADE)
     price = models.FloatField()
-    quantity = models.IntegerField(default = 0)
+    quantity = models.IntegerField(default = 1)
 
     class Meta:
         db_table = 'Offers'
