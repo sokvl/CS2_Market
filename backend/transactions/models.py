@@ -16,3 +16,12 @@ class Transaction(models.Model):
 
     class Meta:
         db_table = 'Transactions'
+
+
+class Ratings (models.Model):
+    rating_id = models.AutoField(primary_key=True);
+    stars = models.IntegerField()
+    transaction_id = models.OneToOneField(Transaction, related_name='ratings', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'Ratings'
