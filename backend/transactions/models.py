@@ -25,3 +25,13 @@ class Ratings (models.Model):
 
     class Meta:
         db_table = 'Ratings'
+
+class Notifications (models.Model):
+    notification_id = models.AutoField(primary_key=True);
+    transaction_id = models.OneToOneField(Transaction, related_name='notifications', on_delete=models.CASCADE)
+    message = models.CharField(max_length=255)
+    active = models.BooleanField()
+    user_id = models.OneToOneField(get_user_model(), related_name='notifications', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'Notifications'
