@@ -18,20 +18,23 @@ class Transaction(models.Model):
         db_table = 'Transactions'
 
 
-class Ratings (models.Model):
-    rating_id = models.AutoField(primary_key=True);
+class Rating (models.Model):
+    rating_id = models.AutoField(primary_key=True)
     stars = models.IntegerField()
-    transaction_id = models.OneToOneField(Transaction, related_name='ratings', on_delete=models.CASCADE)
+    transaction = models.OneToOneField(Transaction, related_name='ratings', on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'Ratings'
 
-class Notifications (models.Model):
-    notification_id = models.AutoField(primary_key=True);
-    transaction_id = models.OneToOneField(Transaction, related_name='notifications', on_delete=models.CASCADE)
+class Notification (models.Model):
+    notification_id = models.AutoField(primary_key=True)
+    transaction = models.OneToOneField(Transaction, related_name='notifications', on_delete=models.CASCADE)
     message = models.CharField(max_length=255)
     active = models.BooleanField()
-    user_id = models.OneToOneField(get_user_model(), related_name='notifications', on_delete=models.CASCADE)
+
+    @property
+    def user_id(self):
+        return self.transaction.seller_id
 
     class Meta:
         db_table = 'Notifications'
