@@ -46,7 +46,7 @@ const Home = () => {
             <div className='rightSideContent'> 
                 <img src={banner} className='blur-[2px] opacity-80 overflow-hidden min-w-full min-h-full'></img>
                 <div className='absolute z-10 top-[40%] left-[30%] text-gray-200'>
-                    <p className='drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]'><h1>Youfar safe CS2 market</h1>
+                    <p className='drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]'><h1>Your safe CS2 market</h1>
                     <p> Shopping, Exchanges, Sells, Withdraws</p></p>
                 </div>
             </div>
