@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from django.core.wsgi import get_wsgi_application
 
 load_dotenv()
 #Login
