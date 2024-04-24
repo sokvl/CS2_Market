@@ -2,7 +2,7 @@ from django.shortcuts import redirect
 from steamauth import auth, get_uid
 from api.serializers.User_serializer import UserSerializer
 from rest_framework.response import Response
-from django.contrib.auth import get_user_model, login
+from django.contrib.auth import get_user_model
 
 
 import os
@@ -36,11 +36,8 @@ def steam_login_callback(request):
         })
         if serializer.is_valid():
             serializer.save()
-            login(request, db_user)
             return redirect(f'/users/{user}')
-    if db_user:
-        login(request, db_user)
-        return redirect(f'/users/{user}')
-
+        
+        return redirect('/fail')
 
         
