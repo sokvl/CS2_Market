@@ -3,7 +3,7 @@ from django.db import transaction, Error
 
 from users.models import Wallet
 
-payment_successful = Signal(providing_args=["user", "amount"])
+payment_successful = Signal()
 
 @receiver(payment_successful)
 def handle_payment_success(sender, **kwargs):
