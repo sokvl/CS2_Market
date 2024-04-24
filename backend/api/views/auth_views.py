@@ -17,7 +17,8 @@ def steam_login_callback(request):
         return redirect('/failed')
     try:
         db_user = get_user_model().objects.get(steam_id=user)
-        print(db_user)
+        print("ID:", db_user)
+        print("ID:", db_user)
     except get_user_model().DoesNotExist:
         STEAMAPI_KEY = os.getenv('STEAMAPI_KEY')
         response = requests.get(
