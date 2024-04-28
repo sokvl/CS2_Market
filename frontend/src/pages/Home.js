@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import '../styles/home.css';
 import { useTheme } from '../ThemeContext';
 import banner from '../assets/pngs/banner.jpg';
@@ -6,36 +6,25 @@ import { useAppState } from '../lib/AppStateManager';
 import '../styles/carousel.css';
 import {Link} from 'react-router-dom'
 import axios from 'axios';
-
+import AuthContext from '../lib/AuthContext';
+import Cookies from "js-cookie";
 const Home = () => {
 
     const [selectedCard, setSelectedCard] = useState(1);
     const { isDarkMode } = useTheme();
     const { state, dispatch } = useAppState();
 
+    const { loginUser } = useContext(AuthContext)
+    const { user } = useContext(AuthContext)
+
     const handleCardChange = (cardNumber) => {
         setSelectedCard(cardNumber);
       };
 
     useEffect(() => {
-        console.log()
-        if (!state.user.isSet) {
-            axios.get("http://localhost:8001/api/auth/check", {
-                withCredentials: true
-            }).then((res) => {
-                console.log(res.data.user)
-                const user = {
-                    steamid: res.data.user.loggedUser.steamId,
-                    avatar: res.data.user.loggedUser.avatarLink,
-                    nickname: res.data.user.loggedUser.username,
-                    isSet: true
-                }
-                dispatch({type: 'RESET_STATE'})
-                dispatch({type: 'ASSIGN_USER', payload: {...user}});
-            }).catch((err) => {
-                console.log(err);
-            })
-        }
+        console.log(Cookies.get())
+        console.log(user)
+       loginUser()
     }, []);
 
            
