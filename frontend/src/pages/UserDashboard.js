@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import '../styles/contact.css';
 import axios from 'axios';
 import { useTheme } from '../ThemeContext';
@@ -9,42 +9,19 @@ import WalletManagment from '../components/dashboardContent/WalletManagment';
 import Settings from '../components/dashboardContent/Settings';
 import UserOffers from '../components/dashboardContent/Offers';
 import Delivery from '../components/dashboardContent/Delivery';
+import AuthContext from '../lib/AuthContext';
 
 const UserDashboard = () => {
   const location = useLocation();
   const { isDarkMode } = useTheme();
   const { state, dispatch } = useAppState();
 
+  const { user } = useContext(AuthContext)
+
   const [profileData, setprofileData] = useState({});
 
   useEffect(() => {
-    if (!state.user.isSet) {
-      axios.get("http://localhost:8001/api/auth/check", {
-          withCredentials: true
-      }).then((res) => {
-          console.log(res.data.user)
-          const user = {
-              steamid: res.data.user.loggedUser.steamId,
-              avatar: res.data.user.loggedUser.avatarLink,
-              nickname: res.data.user.loggedUser.username,
-              isSet: true
-          }
-          dispatch({type: 'RESET_STATE'});
-          dispatch({type: 'ASSIGN_USER', payload: {...user}});
-      }).catch((err) => {
-          console.log(err);
-      })
-    }
-    const fetchData = async () => {
-      try {
-        const profileDataRequest = await axios.get(`http://localhost:8001/users/${state.user.steamid}`);
-        setprofileData(profileDataRequest.data);
-        console.log(profileDataRequest.data)
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchData();
+
   }, [state.user.steamid]);
 
   const getLinkClassName = (pathname) => {
@@ -57,7 +34,7 @@ const UserDashboard = () => {
         <div className='flex flex-col md:flex-row md:space-x-6 space-y-6 md:space-y-0 mt-24'>
           <div className={`${isDarkMode ? 'bg-[#242633]' : 'bg-gradient-to-r from-blue-800 to-blue-900 text-white'} md:w-1/4 p-4 rounded-xl`}>
             <div className="flex flex-col text-sm items-center justify-center">
-              <img src={profileData.avatarLink} className="rounded-full border bg-black" width={96} height={96} alt="User Avatar" />
+              <img src={user.avatar} className="rounded-full border bg-black" width={96} height={96} alt="User Avatar" />
               <h1 className="text-2xl mt-2">{profileData.username}</h1>
             </div>
             <div className='text-md mt-4'>
@@ -87,11 +64,11 @@ const UserDashboard = () => {
             </div>
           </div>
           <div className='md:w-3/4'>
-            {location.pathname === '/UserDashboard/Settings' ? <Settings tl={profileData.steamTradeLink} steamid={state.user.steamid}/> : <></>}           
+            {location.pathname === '/UserDashboard/Settings' ? <Settings tl={"TODO"} steamid={user.steam_id}/> : <></>}           
             {location.pathname === '/UserDashboard/Inventory' ? <Inventory /> : <></>}
-            {location.pathname === '/UserDashboard/Wallet' ? <WalletManagment walletOwner={state.user.steamid} balance={profileData.balance}/> : <></>}
-            {location.pathname === '/UserDashboard/ActiveOffers' ? <UserOffers creatorId={state.user.steamid}></UserOffers> : <></>}
-            {location.pathname === '/UserDashboard/Delivery' ? <Delivery ownerId={state.user.steamid}/> : <></>}
+            {location.pathname === '/UserDashboard/Wallet' ? <WalletManagment walletOwner={user.steam_id} balance={12}/> : <></>}
+            {location.pathname === '/UserDashboard/ActiveOffers' ? <UserOffers creatorId={user.steam_id}></UserOffers> : <></>}
+            {location.pathname === '/UserDashboard/Delivery' ? <Delivery ownerId={user.steam_id}/> : <></>}
 
           </div>
         </div>
