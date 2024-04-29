@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
     path('login/', steam_login),
     path('callback/', steam_login_callback),
-    path('payment/', create_checkout_session),
+    path('payment/<int:amount>', create_checkout_session),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('login/bridge/', steam_bridge)
 ]
