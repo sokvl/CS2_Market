@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import {useTheme} from '../../ThemeContext';
 import axios from 'axios';
+import {loadStripe} from '@stripe/stripe-js';
+import {
+  PaymentElement,
+  Elements,
+  useStripe,
+  useElements,
+} from '@stripe/react-stripe-js';
 
 const WalletManagment = ({walletOwner, balance}) => {
 
@@ -14,12 +21,38 @@ const WalletManagment = ({walletOwner, balance}) => {
   };
 
   const makePayment = async () => {
-    try {
-      const response = await axios.post('http://localhost:8001/payment/make', {inputValue, buyer: walletOwner });
-      console.log(response.data.url)
-      window.location = response.data.url
-    } catch (err) {
-      console.log(err);
+    try{
+      //klucz publiczny do testów
+      const key = 'pk_test_51PAvWC1PDN4klyO5gI9rRb7hQLFi1nqNazo5L5K2pmbRu6SDCwCLe4bo9Udj5uPqSXrA6mNeMDEfP75sfPLHaX05006ffHvcb3'
+
+      //ładuje stripe
+      const stripe = await loadStripe(key);
+
+      //pobieram sessionId z backendu
+      const response = await axios.get(`http://localhost:8000/payment/${inputValue}`);          
+      console.log(response);
+      const sessionId = response.data.sessionId;
+      
+      //przekierowanie do płatności
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: sessionId,
+       });
+      
+      if (error) {
+        // Obsługa błędu płatności
+        console.error('Payment failed:', error);
+        // Przekierowanie na endpoint /fail
+        window.location.href = 'http://localhost:8000/payment/fail';
+      } else {
+        // Płatność zakończona sukcesem
+        // Przekierowanie na endpoint /success
+        window.location.href = 'http://localhost:8000/payment/success';
+      }
+
+      
+    }catch (err) {
+      console.error('Payment failed:', err);
+      window.location.href = '/fail';
     }
   }
 

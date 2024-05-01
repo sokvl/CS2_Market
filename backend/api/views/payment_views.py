@@ -7,9 +7,10 @@ import os
 
 @csrf_exempt
 @api_view(['GET'])
-def create_checkout_session(request):
+def create_checkout_session(request, amount):
+
     try:
-        amount = request.data['amount']
+        
         domain_url = 'http://localhost:8000/'
         stripe.api_key = os.getenv('SECRET_STRIPE_API_KEY')
         checkout_session = stripe.checkout.Session.create(

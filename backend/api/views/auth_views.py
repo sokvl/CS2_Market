@@ -33,13 +33,15 @@ def steam_login_callback(request):
             }
         )
         response = response.json()
-
+        print(response)
         serializer = UserSerializer(data={
             'username': response['personaname'],
             'steam_id': user,
             'avatar_url': response['avatar'],
             'is_admin': False
         })
+        print(serializer)
+
         if serializer.is_valid():
             db_user = serializer.save()
             refresh = MyTokenObtainPairSerializer.get_token(db_user)
