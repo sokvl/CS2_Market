@@ -10,6 +10,7 @@ import Settings from '../components/dashboardContent/Settings';
 import UserOffers from '../components/dashboardContent/Offers';
 import Delivery from '../components/dashboardContent/Delivery';
 import AuthContext from '../lib/AuthContext';
+import AdminPanel from '../components/dashboardContent/AdminPanel';
 
 const UserDashboard = () => {
   const location = useLocation();
@@ -17,6 +18,8 @@ const UserDashboard = () => {
   const { state, dispatch } = useAppState();
 
   const { user } = useContext(AuthContext)
+
+  const [isAdmin, setIsAdmin] = useState(true);
 
   const [profileData, setprofileData] = useState({});
 
@@ -60,6 +63,23 @@ const UserDashboard = () => {
                   <i className="fa-solid fa-truck p-2"></i>
                   <p className='p-1'>Delivery</p>
                 </Link>
+              
+                  {!user ? 
+                    <>               
+                    </>
+                    :
+                    <>
+                      {isAdmin ?                   
+                        <Link to={'/UserDashboard/AdminPanel'} className={getLinkClassName('/UserDashboard/AdminPanel')}>
+                          <i className="fa-solid fa-crown p-2"></i>
+                          <p className='p-1'>Admin Panel</p>
+                        </Link>
+                      : <></>
+                      }
+                    </>
+                  }
+                                  
+                
               </div>
             </div>
           </div>
@@ -69,6 +89,7 @@ const UserDashboard = () => {
             {location.pathname === '/UserDashboard/Wallet' ? <WalletManagment walletOwner={user.steam_id} balance={12}/> : <></>}
             {location.pathname === '/UserDashboard/ActiveOffers' ? <UserOffers creatorId={user.steam_id}></UserOffers> : <></>}
             {location.pathname === '/UserDashboard/Delivery' ? <Delivery ownerId={user.steam_id}/> : <></>}
+            {location.pathname === '/UserDashboard/AdminPanel' ? <AdminPanel steamid={user.steam_id}/> : <></>}
 
           </div>
         </div>
