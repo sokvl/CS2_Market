@@ -8,9 +8,6 @@ import OfferDetailModal from './OfferDetailModal';
 import AuthContext from '../../lib/AuthContext';
 
 const Auction = ({ id, title, offerActiveId, image, price, seed, condition, target, rarityColor, ownerId, isOwnOffer, inspectLink, category, stickerElement }) => {
-
-
-  const [openModal, setopenModal] = useState(false);
   
 
   const { user } = useContext(AuthContext)
