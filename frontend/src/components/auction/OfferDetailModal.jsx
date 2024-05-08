@@ -5,7 +5,7 @@ import AuthContext from '../../lib/AuthContext';
 
 const OfferDetailModal = ({closerHandler, category, rarityColor, 
     imageLink, inspectLink, name, isOwner, 
-    steam_price, price , id, stickerString, ownerId, offerAciveId, condition}) => 
+    steam_price, price , id, stickerString, ownerId, offerAciveId, condition,tradeable}) => 
     {
         const [itemDetails, setitemDetails] = useState([])
         const [ownerData, setOwnerData] = useState([])
@@ -18,10 +18,9 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
 
     const { user } = useContext(AuthContext)
 
-
- useEffect(() => {
-    const fetchItemDetails = async () =>  {
-        try {
+    useEffect(() => {
+        const fetchItemDetails = async () =>  {
+            try {
             axios.post(`http://localhost:8000/inv/item/`, { "inspect_link": inspectLink})
             .then((response) => setitemDetails(response.data.item_details))
             .catch((err) => console.log(err))
@@ -62,8 +61,7 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
         if (stickerTextMatch && stickerTextMatch[1]) {
             stickerNames = stickerTextMatch[1].trim().split(',').map(name => name.trim());
         }
-        
-
+    
         setStickerInfo(srcValues);
         setStickerLabels(stickerNames);
         setitemsSet(true);
@@ -78,23 +76,36 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
 }
 
  const createOffer = () => {
-    axios.post("http://localhost:8001/offers/newOffer", {
-      item: {
-        id: id,
-        name: name,
-        imageLink: imageLink,
-        stickerString: stickerString,
-        inspectLink: inspectLink,
-        rarityColor: rarityColor,
+    
+    axios.post("http://localhost:8000/offers/create_item", {    
+        item_id: id,
+        item_name: name,
+        img_link: imageLink,
+        condition: condition,
+        stickerstring: stickerString,
+        inspect: inspectLink,
+        rarity: rarityColor,
         category: category,
-        condition: condition
-      },
-      price: inputValue,
-      owner: ownerId
+        listed: true,
+        tradeable: tradeable
+
     }).then((res) =>{ 
-        setbuySuccess(true);
-        window.location = '/UserDashboard/Settings'
+        console.log(res)
+        //setbuySuccess(true);
+        //window.location = '/UserDashboard/Settings'
     }).catch((err) => console.log("error:", err))
+
+    axios.post("http://localhost:8000/offers/create", {    
+        owner : 7,``
+        item: 1,
+        quantity: 1,
+        price : inputValue
+
+    }).then((res) =>{ 
+        console.log(res)
+        
+    }).catch((err) => console.log("error:", err))
+
   }
 
   const buyItem = () => {
@@ -209,7 +220,7 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
                                         class="bg-[#242633] border-0 border-b-2 border-white text-white focus:outline-none focus:border-green-300 block mb-4 focus:ring-0"
                                         onChange={handleInputChange}
                                       /> : <></>}
-                            <button className={`bg-emerald-700 rounded-l p-2 px-16 mb-8 transition hover:bg-emerald-600 ${ownerId && offerAciveId == user.steam_id ? 'hidden' : ''}`} onClick={isOwner ? createOffer : buyItem}>
+                            <button className={`bg-emerald-700 rounded-l p-2 px-16 mb-8 transition hover:bg-emerald-600 ${ownerId && offerAciveId == user.steam_id ? 'hidden' : ''}`} onClick={true ? createOffer : buyItem}>
                                 {isOwner ? <><i class="fa-solid fa-tag"></i> &nbsp; List</> : <><i class="fa-solid fa-cart-shopping"></i> &nbsp; Buy now</>}
                             </button>
                         </div>

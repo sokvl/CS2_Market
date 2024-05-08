@@ -1,9 +1,8 @@
 import React, {useState, useEffect, useContext} from 'react'
 import axios from 'axios';
 import Auction from '../auction/Auction';
-import {useAppState} from '../../lib/AppStateManager';
-import AuthContext from '../../lib/AuthContext';
 
+import AuthContext from '../../lib/AuthContext';
 
 
 const Inventory = () => {
@@ -26,7 +25,6 @@ const Inventory = () => {
         }
       }
     };
-
 
     fetchData();
     
@@ -53,6 +51,7 @@ const Inventory = () => {
               inspectLink={auction.inspectlink == null ? "none" : auction.inspectlink}
               stickerElement={auction.descriptions[auction.descriptions.length - 1].value}
               category={auction.itemgroup}
+              tradeable={auction.tradeable}
               />   
           </div>
         ))}

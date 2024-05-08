@@ -17,7 +17,7 @@ export const AuthProvider = ({children}) => {
             "refresh": Cookies.get('refresh'),
             "access": Cookies.get('access')
         }
-        if (tokenCookies.access !== undefined && user == null) {
+        if (localStorage.getItem("access") == null && tokenCookies.access !== undefined && user == null) {
             await axios.post('http://localhost:8000/token/refresh/',
             {
                 'refresh': tokenCookies.refresh
@@ -25,13 +25,19 @@ export const AuthProvider = ({children}) => {
             .then((res) => setAuthTokens(res.data))
             .catch(err => console.log(err))
 
-            //Cookies.remove('refresh')
-            //Cookies.remove('access')
-
-            setUser(jwtDecode((authTokens?.access)?.toString()))
+            let token_string = authTokens.access.toString()
+            localStorage.setItem("access", authTokens.access)
+            localStorage.setItem("refresh", authTokens.refresh)
+            setUser(jwtDecode(token_string))
 
             return true;
         }
+        if ( user == null ) {
+            let access_token = localStorage.getItem("access")
+            console.log("access", access_token)
+            setUser(jwtDecode(access_token))
+        }
+
         return false;
     }
 
