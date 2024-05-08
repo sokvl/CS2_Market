@@ -4,8 +4,8 @@ import { useTheme } from '../../ThemeContext';
 
 
 const Delivery = ({ownerId}) => {
+  
   const { isDarkMode } = useTheme();
-
   const [waiting, setWaiting] = useState([])
   const [pending, setPending] = useState([])
 

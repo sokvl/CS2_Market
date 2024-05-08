@@ -1,27 +1,24 @@
-import React, {useState, useEffect} from 'react'
-import { useAppState } from '../../lib/AppStateManager';
+import React, {useState,useContext } from 'react'
+import AuthContext from '../../lib/AuthContext';
 import { useTheme } from '../../ThemeContext';
 import axios from 'axios';
 
 
-const Wallet = () => {
+const Notifications = () => {
+
+  const { user } = useContext(AuthContext)
 
   const { isDarkMode } = useTheme();
-  const { state } = useAppState();
-  const balance = 0;
-
   const [hidden, setHidden] = useState(true)
   const [notifications, setNotifications] = useState([]);
 
   const fetchNotifications = async () => {
-    await axios.post('http://localhost:8001/notifications', {owner: state.user.steamid})
+    await axios.post('http://localhost:8001/notifications', {owner: user.steam_id})
       .then(
         res => setNotifications(res.data)
       ).catch((err) => console.log(err))
   }
   
-  
-
   const handleNotf = () => {
     fetchNotifications()
     setHidden(prev => !prev)
@@ -29,7 +26,7 @@ const Wallet = () => {
 
     return (
       <>    
-      {state.user.isSet ? 
+      {user ? 
         <div className={``}> 
           <div className="flex flex-row items-center justify-center ">
             <i class={`fa-solid fa-bell text-zinc-500 hover:cursor-pointer ${notifications.length > 0 ? 'animate-bounce' : '' }`} onClick={handleNotf}></i>&nbsp;
@@ -50,4 +47,4 @@ const Wallet = () => {
   )
 }
 
-export default Wallet
+export default Notifications

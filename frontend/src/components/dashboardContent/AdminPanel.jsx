@@ -1,7 +1,5 @@
 
 import React, {useState, useEffect} from 'react'
-import axios from 'axios';
-import {useAppState} from '../../lib/AppStateManager';
 import {useTheme} from '../../ThemeContext';
 
 const AdminPanel = ({steamid}) => {

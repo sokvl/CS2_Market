@@ -1,22 +1,21 @@
 import React, {useState, useEffect, useContext} from 'react'
 import axios from 'axios';
 import Auction from '../auction/Auction';
-import {useAppState} from '../../lib/AppStateManager';
-import AuthContext from '../../lib/AuthContext';
 
+import AuthContext from '../../lib/AuthContext';
 
 
 const Inventory = () => {
 
   const { user } = useContext(AuthContext);
 
-  const { state } = useAppState();
   const [items, setItems] = useState([]);
   let bool = true;
   useEffect(() => {
     const fetchData = async () => {    
         if (bool)  {
         try {
+
           let data = await axios.get(`http://localhost:8000/inv/${user.steam_id}`)
           console.log(data)
           setItems(data.data.inventory);
@@ -49,7 +48,7 @@ const Inventory = () => {
               condition={auction?.wear} 
               target='usersItems'
               rarityColor={auction.color}
-              ownerId={state.user.steamid}
+              ownerId={user.steam_id}
               isOwnOffer={true}
               inspectLink={auction.inspectlink == null ? "none" : auction.inspectlink}
               stickerElement={auction.descriptions[auction.descriptions.length - 1].value}

@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import '../styles/contact.css';
 import axios from 'axios';
 import { useTheme } from '../ThemeContext';
-import { useAppState } from '../lib/AppStateManager';
+import AuthContext from '../../lib/AuthContext';
 import { Link, useLocation } from 'react-router-dom';
 import Modal from 'react-modal';
 
 const UserProfile = () => {
+
+    const { user, dispatch } = useContext(AuthContext)
+
     const location = useLocation();
     const { isDarkMode } = useTheme();
-    const { state, dispatch } = useAppState();
-  
     const [profileData, setProfileData] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
  
     useEffect(() => {
-      if (!state.user.isSet) {
+      if (!user) {
         axios.get("http://localhost:8001/api/auth/check", {
           withCredentials: true
         }).then((res) => {
@@ -33,14 +34,14 @@ const UserProfile = () => {
       }
       const fetchData = async () => {
         try {
-          const profileDataRequest = await axios.get(`http://localhost:8001/users/${state.user.steamid}`);
+          const profileDataRequest = await axios.get(`http://localhost:8001/users/${user.steam_id}`);
           setProfileData(profileDataRequest.data);
         } catch (error) {
           console.error('Error fetching data:', error);
         }
       };
       fetchData();
-    }, [state.user.steamid]);
+    }, [user.steam_id]);
   
     const handleFlagIconClick = () => {
       setIsModalOpen(true);
