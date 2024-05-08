@@ -1,14 +1,16 @@
-import React, {useState} from 'react'
+import React, {useContext, useState} from 'react'
 import { useTheme } from '../../ThemeContext';
 import { useAppState } from '../../lib/AppStateManager';
 import axios from 'axios';
 import OfferDetailModal from './OfferDetailModal';
+import AuthContext from '../../lib/AuthContext';
 
 const Auction = ({ id, title, offerActiveId, image, price, seed, condition, target, rarityColor, ownerId, isOwnOffer, inspectLink, category, stickerElement }) => {
 
   const [openModal, setopenModal] = useState(false);
   
   const { state } = useAppState()
+  const { user } = useContext(AuthContext)
 
   const modalStateHandler = () => {
     setopenModal(prevState => !prevState);
@@ -19,7 +21,7 @@ const Auction = ({ id, title, offerActiveId, image, price, seed, condition, targ
       {/**
       * Modal offer detail jak nazwa wskazuje tylko gdy kafelek jest aukcja/oferta
       */}
-      {openModal && state.user.isSet ? <OfferDetailModal 
+      {openModal && user.steam_id != null ? <OfferDetailModal 
         closerHandler={modalStateHandler}
         imageLink={image}
         inspectLink={inspectLink}
