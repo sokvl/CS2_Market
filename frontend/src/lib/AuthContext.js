@@ -17,7 +17,7 @@ export const AuthProvider = ({children}) => {
             "refresh": Cookies.get('refresh'),
             "access": Cookies.get('access')
         }
-        if (!localStorage.getItem("access") && tokenCookies.access !== undefined && user == null) {
+        if (localStorage.getItem("access") == null && tokenCookies.access !== undefined && user == null) {
             await axios.post('http://localhost:8000/token/refresh/',
             {
                 'refresh': tokenCookies.refresh

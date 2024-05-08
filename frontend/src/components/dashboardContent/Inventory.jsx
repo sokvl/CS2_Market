@@ -15,7 +15,6 @@ const Inventory = () => {
     const fetchData = async () => {    
         if (bool)  {
         try {
-
           let data = await axios.get(`http://localhost:8000/inv/${user.steam_id}`)
           console.log(data)
           setItems(data.data.inventory);
@@ -26,7 +25,6 @@ const Inventory = () => {
         }
       }
     };
-
 
     fetchData();
     
@@ -53,6 +51,7 @@ const Inventory = () => {
               inspectLink={auction.inspectlink == null ? "none" : auction.inspectlink}
               stickerElement={auction.descriptions[auction.descriptions.length - 1].value}
               category={auction.itemgroup}
+              tradeable={auction.tradeable}
               />   
           </div>
         ))}

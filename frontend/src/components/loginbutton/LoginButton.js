@@ -5,7 +5,6 @@ import AuthContext from '../../lib/AuthContext';
 
 const LoginButton = () => {
   const { isDarkMode } = useTheme();
-
   const { user, loginUser } = useContext(AuthContext)
 
     const handleClick = () => {

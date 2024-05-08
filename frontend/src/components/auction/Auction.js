@@ -1,15 +1,10 @@
 
 import React, {useContext, useState} from 'react'
-import { useTheme } from '../../ThemeContext';
-import { useAppState } from '../../lib/AppStateManager';
-import axios from 'axios';
-
 import OfferDetailModal from './OfferDetailModal';
 import AuthContext from '../../lib/AuthContext';
 
-const Auction = ({ id, title, offerActiveId, image, price, seed, condition, target, rarityColor, ownerId, isOwnOffer, inspectLink, category, stickerElement }) => {
+const Auction = ({ id, title, offerActiveId, image, price, seed, condition, target, rarityColor, ownerId, isOwnOffer, inspectLink, category, stickerElement, tradeable }) => {
   
-
   const { user } = useContext(AuthContext)
 
   const [openModal, setopenModal] = useState(false);
@@ -39,6 +34,7 @@ const Auction = ({ id, title, offerActiveId, image, price, seed, condition, targ
         price={price}
         offerAciveId={offerActiveId}
         condition={condition}
+        tradeable={tradeable}
       /> : <></>}
       <div className='flex flex-col bg-[#1f1d24] p-2 m-2 w-fit rounded-md shadow-xl text-white hover:cursor-pointer' onClick={modalStateHandler}>
         <div className="flex flex-row border-t-2 border-r-2 border-l-2 w-fit border-[#3b3847]">
