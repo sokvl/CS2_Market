@@ -1,25 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
-import {useAppState} from '../../lib/AppStateManager';
-
 import Success from '../success/Succes';
+import AuthContext from '../../lib/AuthContext';
 
 const OfferDetailModal = ({closerHandler, category, rarityColor, 
     imageLink, inspectLink, name, isOwner, 
-    steam_price, price , id, stickerString, ownerId, offerAciveId, condition}) => {
-    const [itemDetails, setitemDetails] = useState([])
-    const [ownerData, setOwnerData] = useState([])
-    const [stickerInfo, setStickerInfo] = useState([])
-    const [stickerLabels, setStickerLabels] = useState([])
-    const [inputValue, setinputValue] = useState("")
+    steam_price, price , id, stickerString, ownerId, offerAciveId, condition}) => 
+    {
+        const [itemDetails, setitemDetails] = useState([])
+        const [ownerData, setOwnerData] = useState([])
+        const [stickerInfo, setStickerInfo] = useState([])
+        const [stickerLabels, setStickerLabels] = useState([])
+        const [inputValue, setinputValue] = useState("")
+        const [itemsSet, setitemsSet] = useState(false);
+        const [sellerData, setSellerData] = useState([]);
+        const [buySuccess, setbuySuccess] = useState(false);
 
-    const [itemsSet, setitemsSet] = useState(false);
-    const [sellerData, setSellerData] = useState([]);
-
-    const [buySuccess, setbuySuccess] = useState(false);
-
-    const { state } = useAppState();
-
+        const { user } = useContext(AuthContext)
 
 
  useEffect(() => {
@@ -45,12 +42,9 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
         }
     }
 
-
-
     fetchSellerData()
     fetchItemDetails()
 
-   
 
     if (stickerString) {
         const srcRegex = /<img[^>]+src="([^">]+)"/g;
@@ -105,7 +99,7 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
 
   const buyItem = () => {
     axios.post("http://localhost:8001/transactions", {
-        buyer: state.user.steamid,
+        buyer: user.steam_id,
         seller: ownerId,
         price: price,
         offerId: offerAciveId,
@@ -215,7 +209,7 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
                                         class="bg-[#242633] border-0 border-b-2 border-white text-white focus:outline-none focus:border-green-300 block mb-4 focus:ring-0"
                                         onChange={handleInputChange}
                                       /> : <></>}
-                            <button className={`bg-emerald-700 rounded-l p-2 px-16 mb-8 transition hover:bg-emerald-600 ${ownerId && offerAciveId == state.user.steamid ? 'hidden' : ''}`} onClick={isOwner ? createOffer : buyItem}>
+                            <button className={`bg-emerald-700 rounded-l p-2 px-16 mb-8 transition hover:bg-emerald-600 ${ownerId && offerAciveId == user.steam_id ? 'hidden' : ''}`} onClick={isOwner ? createOffer : buyItem}>
                                 {isOwner ? <><i class="fa-solid fa-tag"></i> &nbsp; List</> : <><i class="fa-solid fa-cart-shopping"></i> &nbsp; Buy now</>}
                             </button>
                         </div>

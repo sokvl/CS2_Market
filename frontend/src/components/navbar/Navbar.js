@@ -4,10 +4,9 @@ import {Link} from 'react-router-dom'
 import MenuIcon from '@mui/icons-material/Menu';
 import { useTheme } from '../../ThemeContext';
 import './navbar.css'
-
 import logo from "../../assets/pngs/logo_cs2market.png";
 import LoginButton from '../loginbutton/LoginButton';
-import Wallet from '../wallet/Wallet';
+import Notifications from '../notifications/Notifications';
 
 function Navbar() {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -27,7 +26,7 @@ function Navbar() {
         </div>   
         <div className="rightSide"> 
             <Link className='menuLink' to="/market"> Market </Link>
-            <Wallet />
+            <Notifications />
             <LoginButton />
             <Link>
               <button onClick={toggleTheme} class='text-grey-200'>
@@ -52,7 +51,7 @@ function Navbar() {
           </button>
         </div>
         <div className='sidebar-top'> 
-          <Wallet />
+          <Notifications />
         </div>
         <ul className='nav-menu-items' onClick ={showSidebar}>
           <li className='navbar-toggle'>

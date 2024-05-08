@@ -2,12 +2,7 @@ import React, { useState } from 'react';
 import {useTheme} from '../../ThemeContext';
 import axios from 'axios';
 import {loadStripe} from '@stripe/stripe-js';
-import {
-  PaymentElement,
-  Elements,
-  useStripe,
-  useElements,
-} from '@stripe/react-stripe-js';
+
 
 const WalletManagment = ({walletOwner, balance}) => {
 
