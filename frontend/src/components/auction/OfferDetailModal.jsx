@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import {useAppState} from '../../lib/AppStateManager';
 
 import Success from '../success/Succes';
+import AuthContext from '../../lib/AuthContext';
 
 const OfferDetailModal = ({closerHandler, category, rarityColor, 
     imageLink, inspectLink, name, isOwner, 
@@ -20,15 +21,17 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
 
     const { state } = useAppState();
 
+    const { user } = useContext(AuthContext)
+
 
 
  useEffect(() => {
     const fetchItemDetails = async () =>  {
         try {
-            axios.post(`http://localhost:8001/itemsDetail`, {itemInspectLink: inspectLink})
-            .then((response) => setitemDetails(response.data))
+            axios.post(`http://localhost:8000/inv/item/`, { "inspect_link": inspectLink})
+            .then((response) => setitemDetails(response.data.item_details))
             .catch((err) => console.log(err))
-            
+            console.log(itemDetails)
         } catch (err) {
             console.log(err);
         }
@@ -36,7 +39,7 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
 
     const fetchSellerData = async () => {
         try {
-            axios.get(`http://localhost:8001/users/${ownerId}`).
+            axios.get(`http://localhost:8000/users/${user.steam_id}`).
                 then((res) => {
                     setSellerData(res.data)
                 })
@@ -45,12 +48,9 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
         }
     }
 
-
-
     fetchSellerData()
     fetchItemDetails()
 
-   
 
     if (stickerString) {
         const srcRegex = /<img[^>]+src="([^">]+)"/g;
@@ -82,7 +82,9 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
     if (value > 0)  // Sprawdzenie, czy wartość jest większa od 0
         setinputValue(value); // Aktualizacja stanu, jeśli wartość jest poprawna
 }
-
+/**
+ * Patryk jeżeli to czytasz, to wiedz, że jedyny syzyf to ja. 
+ */
  const createOffer = () => {
     axios.post("http://localhost:8001/offers/newOffer", {
       item: {
