@@ -37,17 +37,17 @@ const WalletManagment = ({walletOwner, balance}) => {
         // Obsługa błędu płatności
         console.error('Payment failed:', error);
         // Przekierowanie na endpoint /fail
-        window.location.href = 'http://localhost:8000/payment/fail';
+        window.location.href = 'http://localhost:8000/payment';
       } else {
         // Płatność zakończona sukcesem
         // Przekierowanie na endpoint /success
-        window.location.href = 'http://localhost:8000/payment/success';
+        window.location.href = 'http://localhost:8000/payment';
       }
 
       
     }catch (err) {
       console.error('Payment failed:', err);
-      window.location.href = '/fail';
+      //window.location.href = '/fail';
     }
   }
 

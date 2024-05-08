@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import '../styles/contact.css';
 import axios from 'axios';
 import { useTheme } from '../ThemeContext';
-import AuthContext from '../../lib/AuthContext';
+import AuthContext from '../lib/AuthContext';
 import { Link, useLocation } from 'react-router-dom';
 import Modal from 'react-modal';
 

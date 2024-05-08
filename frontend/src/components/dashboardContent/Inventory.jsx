@@ -1,7 +1,9 @@
 import React, {useState, useEffect, useContext} from 'react'
 import axios from 'axios';
 import Auction from '../auction/Auction';
+import {useAppState} from '../../lib/AppStateManager';
 import AuthContext from '../../lib/AuthContext';
+
 
 
 const Inventory = () => {
@@ -14,8 +16,9 @@ const Inventory = () => {
     const fetchData = async () => {    
         if (bool)  {
         try {
-          let data = await axios.get(`http://localhost:8001/steamInventory?userId=${user.steam_id}`)
-          setItems(data.data);
+          let data = await axios.get(`http://localhost:8000/inv/${user.steam_id}`)
+          console.log(data)
+          setItems(data.data.inventory);
           bool = !bool
           console.log(data.data)
         } catch (error) {

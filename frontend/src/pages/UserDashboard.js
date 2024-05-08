@@ -15,7 +15,6 @@ import AdminPanel from '../components/dashboardContent/AdminPanel';
 const UserDashboard = () => {
   const location = useLocation();
   const { isDarkMode } = useTheme();
-  const { state, dispatch } = useAppState();
 
   const { user } = useContext(AuthContext)
 
@@ -25,7 +24,7 @@ const UserDashboard = () => {
 
   useEffect(() => {
 
-  }, [state.user.steamid]);
+  }, [user.steam_id]);
 
   const getLinkClassName = (pathname) => {
     return `flex items-center py-1 rounded-md ${location.pathname === pathname ? 'border-b border-white' : ''}`;
