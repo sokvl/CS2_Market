@@ -1,11 +1,13 @@
 from rest_framework.response import Response
 from django.http import JsonResponse
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 import os
 import requests
 from urllib.parse import quote
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_user_inventory(request, user_id):
     try:
         SA_KEY = os.getenv('STEAMAPI_KEY')
