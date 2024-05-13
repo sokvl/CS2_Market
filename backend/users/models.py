@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 
 class User(AbstractUser):
     user_id = models.AutoField(primary_key=True)
+    username = models.TextField(unique=True)
     steam_id = models.TextField()
     avatar_url = models.TextField()
     steam_tradelink = models.TextField(blank=True)
