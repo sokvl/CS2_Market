@@ -1,9 +1,19 @@
 from rest_framework.decorators import api_view
+from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from api.serializers.Offer_serializer import OfferSerializer
 from api.serializers.Item_serializer import ItemSerializer
 from .models import Offer, Item
+from .filters import OfferFilter
+import django_filters
+
+class OfferListView(viewsets.ModelViewSet):
+    queryset = Offer.objects.all()
+    serializer_class = OfferSerializer
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+    filterset_class = OfferFilter
+
 
 @api_view(['GET'])
 def get_offer(request, offer_id):
@@ -13,6 +23,9 @@ def get_offer(request, offer_id):
         return Response(serializer.data)
     except Offer.DoesNotExist:
         return Response({'error': 'Offer with this offer id doesn`t exist.'}, status=status.HTTP_404_NOT_FOUND)
+
+# class OfferCreateVIew(CreateAPIView):
+
 
 @api_view(['POST'])
 def create_offer(request):
