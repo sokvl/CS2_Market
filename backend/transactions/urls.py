@@ -1,7 +1,12 @@
-from django.urls import path
-from .views import get_notification, create_notification
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import TransactionViewSet, RatingViewSet, NotificationViewSet
+
+router = DefaultRouter()
+router.register(r'', TransactionViewSet)
+router.register(r'ratings', RatingViewSet)
+router.register(r'notifications', NotificationViewSet)
 
 urlpatterns = [
-    path('create_notification/', create_notification, name='create_notification'),
-    path('notification/<int:notification_id>/', get_notification, name='get_notification_by_id'),
+    path('', include(router.urls)),
 ]

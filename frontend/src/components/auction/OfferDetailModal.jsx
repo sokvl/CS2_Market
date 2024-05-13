@@ -76,7 +76,7 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
 }
 
  const createOffer = () => {
-    
+    /*
     axios.post("http://localhost:8000/offers/create_item", {    
         item_id: id,
         item_name: name,
@@ -96,8 +96,8 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
     }).catch((err) => console.log("error:", err))
 
     axios.post("http://localhost:8000/offers/create", {    
-        owner : 7,
-        item: 1,
+        owner : 5,
+        item: 5,
         quantity: 1,
         price : inputValue
 
@@ -105,8 +105,27 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
         console.log(res)
         
     }).catch((err) => console.log("error:", err))
-
+*/
+    console.log({    
+        item_id: id,
+        item_name: name,
+        img_link: imageLink,
+        condition: condition,
+        stickerstring: stickerString,
+        inspect: inspectLink,
+        rarity: rarityColor,
+        category: category,
+        listed: true,
+        tradeable: tradeable,
+        item: {
+            owner: 5,
+            item: 5, 
+            quantity: 1,
+            price: inputValue
+        }
+    })
   }
+  
 
   const buyItem = () => {
     axios.post("http://localhost:8001/transactions", {

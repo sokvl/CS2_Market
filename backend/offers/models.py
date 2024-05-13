@@ -23,7 +23,7 @@ class Item(models.Model):
     img_link = models.TextField()
     condition = models.CharField(max_length=2, blank=True, null=True)
     stickerstring = models.TextField(blank=True, null=True)
-    inspect = models.TextField()
+    inspect = models.TextField(unique=True)
     rarity = models.TextField()
     category = models.TextField()
     listed = models.BooleanField(default=False)
