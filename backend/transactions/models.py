@@ -5,8 +5,8 @@ from offers.models import Offer
 
 class Transaction(models.Model):
     transaction_id = models.AutoField(primary_key=True)
-    offer = models.OneToOneField(Offer, related_name='transaction', on_delete=models.CASCADE)
-    buyer = models.OneToOneField(get_user_model(), related_name='transactions_as_buyer', on_delete=models.CASCADE)
+    offer = models.OneToOneField(Offer, related_name='offer_transaction', on_delete=models.CASCADE)
+    buyer = models.ForeignKey(get_user_model(), related_name='transactions_as_buyer', on_delete=models.CASCADE)
     is_closed = models.BooleanField(default=False)
     value = models.IntegerField()
 
@@ -17,6 +17,9 @@ class Transaction(models.Model):
     class Meta:
         db_table = 'Transactions'
 
+    def __str__(self):
+        return f'{self.offer},  B: {self.buyer}'
+
 
 class Rating (models.Model):
     rating_id = models.AutoField(primary_key=True)
@@ -25,6 +28,9 @@ class Rating (models.Model):
 
     class Meta:
         db_table = 'Ratings'
+
+    def __str__(self):
+        return f'Transaction {self.transaction.transaction_id},  S: {self.stars}'
 
 class Notification (models.Model):
     notification_id = models.AutoField(primary_key=True)
@@ -38,3 +44,6 @@ class Notification (models.Model):
 
     class Meta:
         db_table = 'Notifications'
+
+    def __str__(self):
+        return f'Transaction {self.transaction.transaction_id},  M: {self.message[:10]}'

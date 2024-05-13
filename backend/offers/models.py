@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 
 class Offer(models.Model):
     offer_id = models.AutoField(primary_key=True)
-    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    owner = models.ForeignKey(get_user_model(), related_name="selling_offer", on_delete=models.CASCADE)
     creation_date = models.DateField(default=timezone.now)
     sale_date = models.DateField(null=True)
     is_active = models.BooleanField(default=True)
@@ -14,6 +14,9 @@ class Offer(models.Model):
 
     class Meta:
         db_table = 'Offers'
+
+    def __str__(self):
+        return f'O: {self.owner},  I: {self.item}'
 
 
 
@@ -31,3 +34,6 @@ class Item(models.Model):
 
     class Meta:
         db_table = 'Items'
+
+    def __str__(self):
+        return f'{self.item_name},  {self.condition}'

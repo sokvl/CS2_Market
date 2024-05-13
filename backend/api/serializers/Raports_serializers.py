@@ -6,4 +6,4 @@ class UserRatingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ['id', 'username', 'average_rating']
+        fields = ['user_id', 'username', 'average_rating']
