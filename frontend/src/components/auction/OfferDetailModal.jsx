@@ -96,7 +96,7 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
     }).catch((err) => console.log("error:", err))
 
     axios.post("http://localhost:8000/offers/create", {    
-        owner : 7,``
+        owner : 7,
         item: 1,
         quantity: 1,
         price : inputValue
