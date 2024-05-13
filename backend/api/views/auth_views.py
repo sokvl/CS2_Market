@@ -5,8 +5,6 @@ from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.decorators import api_view
-from django.conf import settings
 from api.serializers.Custom_token_serializer import MyTokenObtainPairSerializer
 
 import os
@@ -55,8 +53,8 @@ def steam_login_callback(request):
     if(db_user):
         refresh = MyTokenObtainPairSerializer.get_token(db_user)
         response = redirect(APP_URL)
-        response.set_cookie(key='refresh', value=str(refresh), samesite='Lax', secure=True)
-        response.set_cookie(key='access', value=str(refresh.access_token), samesite='Lax', secure=True)
+        response.set_cookie(key='refresh', value=str(refresh),  httponly=True, samesite='Lax', secure=True)
+        response.set_cookie(key='access', value=str(refresh.access_token), httponly=True, samesite='Lax', secure=True)
         return response
 
 def steam_bridge(request):
