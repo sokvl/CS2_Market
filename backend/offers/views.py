@@ -17,11 +17,14 @@ def get_offer(request, offer_id):
 @api_view(['POST'])
 def create_offer(request):
     serializer = OfferSerializer(data=request.data)
+    print(serializer)
     if serializer.is_valid():
+        print("Valid")
         serializer.save()
         return Response({'message': 'Offer successfully created.'}, status=status.HTTP_200_OK)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 #TODO: Parametrized offers selection
 
