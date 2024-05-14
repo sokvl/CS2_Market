@@ -6,7 +6,6 @@ import axios from 'axios';
 import { useTheme } from '../ThemeContext';
 import { Auction } from '../components/index';
 
-
 Modal.setAppElement('#root'); 
 
 export default function Market() {
@@ -22,42 +21,46 @@ export default function Market() {
 
   let checkBoxState = [true, true,true,true,true,true,true,true,true,true,true,true,true,true,true]
 
+  const [offers, setOffers] = useState([]);
+  const [itemName, setItemName] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedConditions, setSelectedConditions] = useState([]);
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+
+
   const fetchData = async () => {
     try {
-      const dataResponse = await axios.get('http://localhost:8001/offers/');
+      const categoriesParam = selectedCategories.join('&category=');
+      const conditionsParam = selectedConditions.join('&condition=');
+
+      const dataResponse = await axios.get(`http://localhost:8000/offers/?item_category=${categoriesParam}&price_min=${minPrice}&price_max=${maxPrice}&item_condition=${conditionsParam}&item_name=${itemName}`);
       const auctionsData = dataResponse.data;
-      const filteredData = auctionsData.filter(item => item.isActive === true);
-      setItems(filteredData);
-      setdisplayItems(filteredData)
+
+      setOffers(auctionsData);
+      setItems(auctionsData);
+      setdisplayItems(auctionsData)
       setisSet(true)
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
-  const sortAscending = () => {
-    const sortedItems = [...displayItems].sort((a, b) => a.price - b.price);
-    setdisplayItems(sortedItems);
+  const handleFilter = () => {
+    fetchData();
   };
 
-  const sortDescending = () => {
-    const sortedItems = [...displayItems].sort((a, b) => b.price - a.price);
-    setdisplayItems(sortedItems);
+  const handleMinPriceChange = (event) => {
+    setMinPrice(event.target.value);
   };
 
-  const filterItems = () => {
-    // Przykład filtrowania: zwróć elementy, które są zawarte w condFilters
-    const filteredItems = items.filter(item => !catfilters.includes(item.item.category));
-    const sf = filteredItems.filter(item => !condFilters.includes(item.item.condition))
-    setdisplayItems(sf);
-    console.log("displayed", displayItems)
+  const handleMaxPriceChange = (event) => {
+    setMaxPrice(event.target.value);
   };
 
-  const filterConditions = () => {
-    const filteredItems = items.filter(item => !condFilters.includes(item.item.condition));
-    setdisplayItems(filteredItems);
-    console.log(displayItems)
-  }
+  const handleItemNameChange = (event) => {
+    setItemName(event.target.value);
+  };
 
   const openModal = (auction) => {
     setSelectedAuction(auction);
@@ -67,31 +70,25 @@ export default function Market() {
     setSelectedAuction(null);
   };
 
-  const hanldeChangeCategory = (e) => {
-    if(catfilters.includes(e.target.value)) {
-      setcatFilters([...categories])
-      setcatFilters(catfilters.filter(filter => filter != e.target.value))
-      console.log(catfilters)
+  const handleCategoryChange = (event) => {
+    const category = event.target.value;
+    if (event.target.checked) {
+      setSelectedCategories([...selectedCategories, category]);
     } else {
-      setcatFilters([...catfilters, e.target.value.toLowerCase()])
-      console.log(catfilters)
+      setSelectedCategories(selectedCategories.filter((cat) => cat !== category));
     }
-    filterItems()
-  }
+  };
 
-  const hanldeChange = (e) => {
-    if(condFilters.includes(e.target.value)) {
-      setcondFilters([...conditions])
-      setcondFilters(condFilters.filter(filter => filter != e.target.value))
-      console.log(condFilters)
+  const handleConditionChange = (event) => {
+    const condition = event.target.value;
+    if (event.target.checked) {
+      setSelectedConditions([...selectedConditions, condition]);
     } else {
-      setcondFilters([...condFilters, e.target.value])
-      console.log(condFilters)
+      setSelectedConditions(selectedConditions.filter((con) => con !== condition));
     }
-  }
+  };
 
   
-
   useEffect(() => {
     if(!isSet) {
       fetchData()
@@ -99,7 +96,7 @@ export default function Market() {
       //setcatFilters([...categories])
     }
    // filterConditions();
-    filterItems()
+    
   }, [condFilters, catfilters]);
 
 
@@ -107,30 +104,26 @@ export default function Market() {
   const categories = [ 'pistol', 'rifle', 'smg', 'sniper rifle', 'shotgun', 'knife', 'gloves', 'agent', 'sticker', 'container'];
   const conditions = [ 'fn', 'mw', 'ft', 'ww', 'bs'];
 
-
-
   return (
     <>
       <div class={`flex mt-8 min-h-screen flex-row ${isDarkMode ? 'bg-gradient-to-r from-[#121212] via-[#04101A] to-[#1a1625]' : 'bg-gradient-to-r from-blue-800 via-indigo-600 to-violet-900'} overflow-hidden max-h-[100vh]`}>      
           <div className={`${isDarkMode ? 'bg-[#0e0e0e] text-white': ' bg-white' } min-h-screen px-4 ${open ? 'w-72 overflow-y-auto': 'w-16' } transition-all duration-300 ease-in-out`}>
               <div className='py-3 flex justify-end'>
-              <HiMenuAlt3 className={`text-2xl mr-4 cursor-pointer ${isDarkMode ? 'text-white' : 'text-blue-700'}`} onClick={() => setOpen(!open)} />
-
+                <HiMenuAlt3 className={`text-2xl mr-4 cursor-pointer ${isDarkMode ? 'text-white' : 'text-blue-700'}`} onClick={() => setOpen(!open)} />
               </div>
+              <h1 className='text-xl text-center'> Name </h1>
+              <input type='text' className='mt-4 w-full p-2 text-black text-center' value={itemName} onChange={handleItemNameChange} placeholder='Item name'/>
             <div className={`whitespace-pre duration-500 ${!open && "opacity-0 translate-x-28 overflow-hidden"}`}> 
-              <div className=' mt-12'>
+              <div className='mt-8'>
                 
                 <h1 className='text-xl text-center pb-2'> Price </h1>
                   <div className='flex justify-center text-2xl p-2'>
-                    <button onClick={sortDescending}>
-                      <i class="fa-solid fa-arrow-down-short-wide mr-4 hover:cursor-pointer" ></i>
-                    </button>
-                    <button onClick={sortAscending}>
-                    <i class="fa-solid fa-arrow-up-short-wide ml-4 hover:cursor-pointer" ></i>
-                    </button>
+                    <input type='number' className='w-1/2 p-2 text-black text-center' onChange={handleMinPriceChange} value={minPrice} placeholder='min price'/>
+                    <input type='number' className='w-1/2 p-2 text-black text-center' onChange={handleMaxPriceChange} value={maxPrice}placeholder='max price'/>
+                    
                   </div>
                 <hr className='py-4'/>
-                <h1 className='text-xl text-center pb-2'>Without category </h1>
+                <h1 className='text-xl text-center pb-2'>Pick category </h1>
                 <div className="space-y-2 text-sm">
                   {categories.map((category) => (
                     <label key={category} className="flex items-center space-x-2">
@@ -138,7 +131,7 @@ export default function Market() {
                         type="checkbox"
                         value={category}
                         className="h-4 w-4 text-indigo-800 transition duration-150 ease-in-out"
-                        onChange={hanldeChangeCategory}
+                        onChange={handleCategoryChange}
                       />
                       <span>{category}</span>
                     </label>
@@ -153,13 +146,16 @@ export default function Market() {
                         type="checkbox"
                         value={condition}
                         className="h-4 w-4 text-indigo-800 transition duration-150 ease-in-out "
-                        onChange={hanldeChange}
+                        onChange={handleConditionChange}
                       />
                       <span className='text-l'>{condition}</span>
                     </label>
                   ))}
-                </div>   
-                <hr className='py-4 mt-4'/>  
+                </div>            
+                <hr className='py-4 mt-4'/>
+                <div className='text-center'>
+                  <button className='bg-blue-800 text-white p-2 rounded-md' onClick={handleFilter}>Filter</button>
+                </div>
               </div>
             </div>
           </div>      
@@ -168,15 +164,15 @@ export default function Market() {
             {displayItems.map((auction, i) => (
               <div key={i} className='min-w-fit'>
                 <Auction 
-                  id={auction.item.id} 
-                  title={auction.item.name} 
-                  image={auction.item.imageLink} 
+                  id={auction.item.item_id} 
+                  title={auction.item.item_name} 
+                  image={auction.item.img_link} 
                   price={auction.price}  
                   ownerId={auction.owner} 
-                  inspectLink={auction.item.inspectLink == null ? "none" : auction.item.inspectLink}
-                  stickerElement={auction.item.stickerString}
+                  inspectLink={auction.item.inspect == null ? "none" : auction.item.inspect}
+                  stickerElement={auction.item.stickerstring}
                   isOwnOffer={false}
-                  rarityColor={auction.item.rarityColor}
+                  rarityColor={auction.item.rarity}
                   offerActiveId={auction._id}
                   condition={auction.item.condition}
                 />
@@ -205,7 +201,7 @@ export default function Market() {
 
                         <div className={`flex flex-col w-full lg:w-1/2 items-center justify-center ${isDarkMode ? 'bg-neutral-700 text-white':'text-white'}`}>
                             <p className='text-xl'><b>Condition:</b> {selectedAuction.item.condition}</p>
-                            <p className='text-xl pt-8'><b>Float:</b> {selectedAuction.item.seed}</p>
+                            <p className='text-xl pt-8'><b>Float:</b></p>
                             <p className='pt-8 text-xl'> <b>Price:</b> {selectedAuction.price}$ </p>
                             <p className='pt-8 text-xl'><b> Suggested price:</b> {selectedAuction.price}$ </p> 
                         </div>
