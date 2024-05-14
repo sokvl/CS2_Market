@@ -13,6 +13,9 @@ class User(AbstractUser):
     class Meta:
         db_table = 'Users'
 
+    def __str__(self):
+        return f'{self.username}'
+
 
 class Wallet(models.Model):
     wallet_id = models.AutoField(primary_key=True)
@@ -21,4 +24,6 @@ class Wallet(models.Model):
     
     class Meta:
         db_table = 'Wallets'
-    
+
+    def __str__(self):
+        return f'{self.user}: {self.balance}'

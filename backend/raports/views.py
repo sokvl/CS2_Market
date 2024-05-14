@@ -12,9 +12,9 @@ class RatingReport(APIView):
         max_rating = request.query_params.get('max_rating', 5)
 
         users_with_rating = get_user_model().objects.filter(
-            transactions_as_buyer__is_closed=True
+            selling_offer__offer_transaction__is_closed=True
         ).annotate(
-            average_rating=Avg('transactions_as_buyer__ratings__stars')
+            average_rating=Avg('selling_offer__offer_transaction__ratings__stars')
         ).filter(
             average_rating__gte=min_rating,
             average_rating__lte=max_rating
