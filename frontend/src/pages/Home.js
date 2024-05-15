@@ -24,7 +24,7 @@ const Home = () => {
     useEffect(() => {
         console.log(Cookies.get())
         console.log(user)
-       loginUser()
+      // loginUser()
     }, []);
 
            

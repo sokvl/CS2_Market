@@ -45,18 +45,18 @@ def steam_login_callback(request):
             refresh = MyTokenObtainPairSerializer.get_token(db_user)
             
             response = redirect(APP_URL)
-            response.set_cookie(key='refresh', value=str(refresh), httponly=True, samesite='Lax', secure=True)
-            response.set_cookie(key='access', value=str(refresh.access_token), httponly=True, samesite='Lax', secure=True)
+            response.set_cookie(key='refresh', value=str(refresh), samesite='Lax', secure=True)
+            response.set_cookie(key='access', value=str(refresh.access_token), samesite='Lax', secure=True)
      
             return response
         
     if(db_user):
         refresh = MyTokenObtainPairSerializer.get_token(db_user)
         response = redirect(APP_URL)
-        response.set_cookie(key='refresh', value=str(refresh),  httponly=True, samesite='Lax', secure=True)
-        response.set_cookie(key='access', value=str(refresh.access_token), httponly=True, samesite='Lax', secure=True)
+        response.set_cookie(key='refresh', value=str(refresh), samesite='Lax', secure=True)
+        response.set_cookie(key='access', value=str(refresh.access_token), samesite='Lax', secure=True)
         return response
 
 def steam_bridge(request):
-    response = redirect('http://localhost:3001/')
+    response = redirect('http://localhost:3001/auth_success')
     return response

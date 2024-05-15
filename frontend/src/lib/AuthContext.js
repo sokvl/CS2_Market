@@ -13,38 +13,59 @@ export const AuthProvider = ({children}) => {
     const [authTokens, setAuthTokens] = useState(null)
 
     let loginUser = async () => {
-        const tokenCookies = {
+        const tempTokens = {
             "refresh": Cookies.get('refresh'),
             "access": Cookies.get('access')
         }
-        if (localStorage.getItem("access") == null && tokenCookies.access !== undefined && user == null) {
-            await axios.post('http://localhost:8000/token/refresh/',
-            {
-                'refresh': tokenCookies.refresh
-            })
-            .then((res) => setAuthTokens(res.data))
-            .catch(err => console.log(err))
-
-            let token_string = authTokens.access.toString()
-            localStorage.setItem("access", authTokens.access)
-            localStorage.setItem("refresh", authTokens.refresh)
-            setUser(jwtDecode(token_string))
-
-            return true;
+        if (user == null && authTokens == null) {
+           updateToken(tempTokens.refresh)
         }
-        if ( user == null ) {
-            let access_token = localStorage.getItem("access")
-            console.log("access", access_token)
-            setUser(jwtDecode(access_token))
-        }
-
-        return false;
     }
+
+    let updateToken = async (temp) => {
+        let res = await axios.post('http://localhost:8000/token/refresh/',
+        {
+            'refresh': temp != null ? temp : authTokens?.refresh
+        })
+        if (res.status == 200) {
+            setAuthTokens(res.data)
+            let token_string = res.data.access.toString()
+            localStorage.setItem("access", res.data.access)
+            localStorage.setItem("refresh", res.data.refresh)
+            setUser(jwtDecode(token_string))
+        } else {
+            alert("Login unsuccesful.")
+        }
+        
+    }
+
+    const logoutUser = () => {
+        setAuthTokens(null)
+        setUser(null)
+        localStorage.removeItem("access")
+        localStorage.removeItem("refresh")
+    }
+
 
     let contextData = {
         user:user,
-        loginUser:loginUser
+        authTokens: authTokens,
+        loginUser:loginUser,
+        logoutUser: logoutUser
     }
+
+    useEffect(()=> {
+
+        let timeInterval = 270000
+
+        let interval =  setInterval(()=> {
+            if(authTokens){
+                updateToken()
+            }
+        }, timeInterval)
+        return ()=> clearInterval(interval)
+
+    }, [authTokens])
 
     return(
         <AuthContext.Provider value={contextData}>

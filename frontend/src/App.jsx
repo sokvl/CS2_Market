@@ -11,6 +11,7 @@ import { AuthProvider } from './lib/AuthContext';
 import UserProfile from './pages/UserProfile';
 
 import PrivateRoute from './utils/PrivateRoute'
+import LoginSuccess from './pages/LoginSuccess';
 
 function App() {
 
@@ -29,7 +30,7 @@ function App() {
                             <Route path='/market'  exact element = {<Market />}/>
                             <Route path='/contact' exact element={<Contact />} />
                             <Route path='/UserDashboard/:section' exact element={<UserDashboard />} />
-
+                            <Route path='/auth_success' exac element={<LoginSuccess />} />
                         </Routes>
                         <Footer/>
                     </Router>

@@ -1,18 +1,19 @@
 import React, {useEffect, useState, useContext} from 'react'
 import axios from 'axios';
 import AuthContext from '../lib/AuthContext';
-
+import { useNavigate } from 'react-router-dom';
 import Cookies from "js-cookie";
 
 const LoginSuccess = () => {
 
-    const [logged, setLogged] = useState(False);
+    const [logged, setLogged] = useState(false);
     const { loginUser } = useContext(AuthContext);
-    const { user } = useContext(AuthContext);
+    let navigate = useNavigate();
 
-    useEffect(async () => {
-      if (loginUser()) 
-         setLogged(true);
+    useEffect( () => {
+      loginUser()
+      setLogged(logged => !logged)
+      navigate('/');
     }, [])
 
   return (
