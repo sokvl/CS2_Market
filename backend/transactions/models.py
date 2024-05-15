@@ -1,14 +1,17 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-
 from offers.models import Offer
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+from django.utils import timezone
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Transaction(models.Model):
     transaction_id = models.AutoField(primary_key=True)
     offer = models.OneToOneField(Offer, related_name='offer_transaction', on_delete=models.CASCADE)
     buyer = models.ForeignKey(get_user_model(), related_name='transactions_as_buyer', on_delete=models.CASCADE)
     is_closed = models.BooleanField(default=False)
-    value = models.IntegerField()
+    closed_date = models.DateTimeField(blank=True, null=True)
 
     @property
     def seller_id(self):
@@ -20,10 +23,20 @@ class Transaction(models.Model):
     def __str__(self):
         return f'{self.offer},  B: {self.buyer}'
 
+@receiver(pre_save, sender=Transaction)
+def update_closed_date(sender, instance, **kwargs):
+    if instance.is_closed and not instance.closed_date:
+        instance.closed_date = timezone.now()
+
 
 class Rating (models.Model):
     rating_id = models.AutoField(primary_key=True)
-    stars = models.IntegerField()
+    stars = models.IntegerField(
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(5)
+        ]
+    )
     transaction = models.OneToOneField(Transaction, related_name='ratings', on_delete=models.CASCADE)
 
     class Meta:
