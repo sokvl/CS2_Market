@@ -111,12 +111,13 @@ export default function Market() {
               <div className='py-3 flex justify-end'>
                 <HiMenuAlt3 className={`text-2xl mr-4 cursor-pointer ${isDarkMode ? 'text-white' : 'text-blue-700'}`} onClick={() => setOpen(!open)} />
               </div>
-              <h1 className='text-xl text-center'> Name </h1>
-              <input type='text' className='mt-4 w-full p-2 text-black text-center' value={itemName} onChange={handleItemNameChange} placeholder='Item name'/>
+              
             <div className={`whitespace-pre duration-500 ${!open && "opacity-0 translate-x-28 overflow-hidden"}`}> 
               <div className='mt-8'>
-                
-                <h1 className='text-xl text-center pb-2'> Price </h1>
+                <h1 className='text-xl text-center'> Name </h1>
+                <input type='text' className='mt-4 w-full p-2 text-black text-center' value={itemName} onChange={handleItemNameChange} placeholder='Item name'/>
+               
+                <h1 className='text-xl text-center mt-4 pb-2'> Price </h1>
                   <div className='flex justify-center text-2xl p-2'>
                     <input type='number' className='w-1/2 p-2 text-black text-center' onChange={handleMinPriceChange} value={minPrice} placeholder='min price'/>
                     <input type='number' className='w-1/2 p-2 text-black text-center' onChange={handleMaxPriceChange} value={maxPrice}placeholder='max price'/>

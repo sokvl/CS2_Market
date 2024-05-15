@@ -2,30 +2,70 @@
 import React, {useState, useEffect} from 'react'
 import {useTheme} from '../../ThemeContext';
 import Stars from '../ratingSystem/Stars';
+import axios from 'axios';
+import '../../styles/adminPanel.css';
 
 const AdminPanel = ({steamid}) => {
 
+    const [showPopup, setShowPopup] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
     const [selectedOption, setSelectedOption] = useState('option1');
+    const [selectedStars, setSelectedStars] = useState(0);
+    const [selectedStars2, setSelectedStars2] = useState(0);
+
+    const [data, setData] = useState([]);
+    
+    const handleStarChange = (stars, whichStar) => {
+      if (whichStar === 1) setSelectedStars(stars);
+      else setSelectedStars2(stars);
+    };
 
     const handleRadioChange = (event) => {
         setSelectedOption(event.target.value);
-      };
+    };
+
+    const handleRaportGenerate = () => {
+      if(selectedStars > selectedStars2 && selectedStars2 === 0) {
+        alert('Zakres ocen jest niepoprawny');
+        return;
+      } 
+        axios.get(`http://localhost:8000/reports/rating/?min_rating=${selectedStars}&max_rating=${selectedStars2}`)
+       .then((response) => {
+          
+          setData(response.data);
+          console.log(data);
+          setShowPopup(true);
+          setIsLoading(true);
+          setTimeout(() => {
+            setIsLoading(false);
+            
+          }, 3000); 
+          
+       })
+       .catch((error) => {
+         console.error('Error fetching data:', error);
+       });
+
+    }
+
 
       const renderForm = () => {
         
         if (selectedOption === 'option1') {
+
             return (
               <div className="flex flex-col items-center justify-center">
                 <p className="mt-8 text-2xl text-center">Wyszukaj użytkowników z wybranego zakresu ocen</p><br/>
                 <div className="flex items-center justify-center">
                   <p>Od: </p>
-                  <Stars />
+                  <Stars onStarChange={(stars) => handleStarChange(stars, 1)} />
                 </div>
                 <div className="flex items-center justify-center">
                   <p>Do: </p>
-                  <Stars />
+                  <Stars onStarChange={(stars) => handleStarChange(stars, 2)} />
                 </div>
-                <button className={`font-bold py-2 px-4 rounded mt-4 ${isDarkMode ? 'bg-[#242633]' : 'bg-blue-500 text-white hover:bg-blue-700'}`}>
+                <button onClick={handleRaportGenerate} className={`font-bold py-2 px-4 rounded mt-4 ${isDarkMode ? 'bg-[#242633]' : 'bg-blue-500 text-white hover:bg-blue-700'}`}>
                   Wygeneruj raport
                 </button>
               </div>
@@ -90,9 +130,42 @@ const AdminPanel = ({steamid}) => {
 
     return (
         <>
-         
+     
          <div className={`${isDarkMode ? 'bg-[#1f1d24]' : 'bg-gradient-to-r from-blue-800 to-blue-900 text-white' } p-6 rounded-xl mt-2 h-full md:w-2/2 md:ml-6'`}>
             <p className='mb-4 text-3xl text-center'> Admin Panel </p>
+
+            {showPopup && (
+              <>
+                <div className="overlay" onClick={() => setShowPopup(false)}></div>
+                  <div className="popUp">
+                    {isLoading ? (
+                      <>
+                        <h1 className='text-3xl text-center'> Raport is generating, wait a second please ... </h1>
+                        <div className="loading">Loading&#8230;</div> 
+                      </>
+                    ) : (
+                      <>
+                        <h1 className='text-3xl text-center mb-4'> Raport results</h1>
+                        <p className='text-xl text-center'>Users with rating between {selectedStars} and {selectedStars2} <i className="fa-solid fa-star "></i></p>
+                        <div className="grid grid-cols-1 p-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-8">
+                          {data.map((user) => (
+                            <div key={user.id} className="bg-[#242633] p-4 rounded-xl w-full sm:w-auto">
+                              <img src={user.avatar_url} width='100%' height='100%'
+                                className="rounded-full border bg-black" alt="User Avatar"
+                              />                
+                              <p className='mt-4 text-center text-xl'>{user.username}</p>
+                              <p className='mt-4 text-center text-sm'>Average rating:</p>
+                              <p className='mt-1 text-center text-md'>{user.average_rating} / 5.00</p>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+
+                  </div>
+              </>
+            )}
+
 
             <div className="grid w-[20rem] grid-cols-2 gap-2 rounded-xl text-black bg-gray-200 p-2 mx-auto items-center justify-center">
                 <div>
