@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-
 from offers.models import Offer
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+from django.utils import timezone
 
 class Transaction(models.Model):
     transaction_id = models.AutoField(primary_key=True)
@@ -9,6 +11,7 @@ class Transaction(models.Model):
     buyer = models.ForeignKey(get_user_model(), related_name='transactions_as_buyer', on_delete=models.CASCADE)
     is_closed = models.BooleanField(default=False)
     value = models.IntegerField()
+    closed_date = models.DateTimeField(blank=True, null=True)
 
     @property
     def seller_id(self):
@@ -19,6 +22,11 @@ class Transaction(models.Model):
 
     def __str__(self):
         return f'{self.offer},  B: {self.buyer}'
+
+@receiver(pre_save, sender=Transaction)
+def update_closed_date(sender, instance, **kwargs):
+    if instance.is_closed and not instance.closed_date:
+        instance.closed_date = timezone.now()
 
 
 class Rating (models.Model):
