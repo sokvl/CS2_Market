@@ -169,7 +169,7 @@ export default function Market() {
                   title={auction.item.item_name} 
                   image={auction.item.img_link} 
                   price={auction.price}  
-                  ownerId={auction.owner} 
+                  owner={auction.owner} 
                   inspectLink={auction.item.inspect == null ? "none" : auction.item.inspect}
                   stickerElement={auction.item.stickerstring}
                   isOwnOffer={false}

@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views.payment_views import create_checkout_session
+from .views.payment_views import create_checkout_session, stripe_webhook
 from .views.auth_views import steam_login, steam_login_callback, steam_bridge
 from .views.inventory_views import get_item_details, get_user_inventory
 from rest_framework_simplejwt.views import (
@@ -14,6 +14,7 @@ urlpatterns = [
     path('login/bridge/', steam_bridge),
     ### Payment ###
     path('payment/<int:amount>', create_checkout_session),
+    path('success/', stripe_webhook),
     ### Inventory Views ###
     path('inv/<str:user_id>', get_user_inventory),
     path('inv/item/', get_item_details),

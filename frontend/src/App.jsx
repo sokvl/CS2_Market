@@ -11,6 +11,7 @@ import { AuthProvider } from './lib/AuthContext';
 import UserProfile from './pages/UserProfile';
 
 import PrivateRoute from './utils/PrivateRoute'
+import LoginSuccess from './pages/LoginSuccess';
 
 function App() {
 
@@ -25,11 +26,11 @@ function App() {
                         <PrivateRoute path='/UserDashboard/' exact element={<UserDashboard />} />
                         <PrivateRoute path='/UserProfile' exact element={<UserProfile />} />
                         <Routes>
-                            <Route path='/' exact element={<Home />} />
+                            <Route path="/" element={<Home />} />
                             <Route path='/market'  exact element = {<Market />}/>
                             <Route path='/contact' exact element={<Contact />} />
                             <Route path='/UserDashboard/:section' exact element={<UserDashboard />} />
-
+                            <Route path='/auth_success' exact element={<LoginSuccess />} />
                         </Routes>
                         <Footer/>
                     </Router>

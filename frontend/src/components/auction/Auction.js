@@ -3,7 +3,7 @@ import React, {useContext, useState} from 'react'
 import OfferDetailModal from './OfferDetailModal';
 import AuthContext from '../../lib/AuthContext';
 
-const Auction = ({ id, title, offerActiveId, image, price, seed, condition, target, rarityColor, ownerId, isOwnOffer, inspectLink, category, stickerElement, tradeable }) => {
+const Auction = ({ id, title, offerActiveId, image, price, seed, condition, target, rarityColor, owner, isOwnOffer, inspectLink, category, stickerElement, tradeable }) => {
   
   const { user } = useContext(AuthContext)
 
@@ -27,7 +27,7 @@ const Auction = ({ id, title, offerActiveId, image, price, seed, condition, targ
         steam_price={price}
         isOwner={isOwnOffer}
         stickerString={stickerElement}
-        ownerId={ownerId}
+        owner={owner}
         rarityColor={rarityColor}
         category={category}
         id={id}

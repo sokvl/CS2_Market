@@ -2,11 +2,13 @@ import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import Success from '../success/Succes';
 import AuthContext from '../../lib/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const OfferDetailModal = ({closerHandler, category, rarityColor, 
     imageLink, inspectLink, name, isOwner, 
-    steam_price, price , id, stickerString, ownerId, offerAciveId, condition,tradeable}) => 
+    steam_price, price , id, stickerString, owner, offerAciveId, condition,tradeable}) => 
     {
+        let navigate = useNavigate()
         const [itemDetails, setitemDetails] = useState([])
         const [ownerData, setOwnerData] = useState([])
         const [stickerInfo, setStickerInfo] = useState([])
@@ -30,18 +32,7 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
         }
     }
 
-    const fetchSellerData = async () => {
-        try {
-            axios.get(`http://localhost:8000/users/${user.steam_id}`).
-                then((res) => {
-                    setSellerData(res.data)
-                })
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    fetchSellerData()
+    
     fetchItemDetails()
 
 
@@ -75,37 +66,33 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
         setinputValue(value); // Aktualizacja stanu, jeśli wartość jest poprawna
 }
 
- const createOffer = () => {
-    /*
-    axios.post("http://localhost:8000/offers/create_item", {    
-        item_id: id,
-        item_name: name,
-        img_link: imageLink,
-        condition: condition,
-        stickerstring: stickerString,
-        inspect: inspectLink,
-        rarity: rarityColor,
-        category: category,
-        listed: true,
-        tradeable: tradeable
-
+ const createOffer = async () => {
+    console.log(user.steam_id)
+    await axios.post("http://localhost:8000/offers/", {
+        "item": {
+            "item_name": name,
+            "img_link": imageLink,
+            "condition": condition,
+            "stickerstring": stickerString,
+            "inspect": inspectLink,
+            "rarity": rarityColor,
+            "category": category,
+            "listed": true,
+            "tradeable": true
+        },
+        "price": parseFloat(inputValue),
+        "quantity": 1,
+        "steam_id": user.steam_id.toString()
+    }, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("access")}`
+        }
     }).then((res) =>{ 
-        console.log(res)
-        //setbuySuccess(true);
-        //window.location = '/UserDashboard/Settings'
+        console.log("responsik:", res)
+        navigate("/market")
     }).catch((err) => console.log("error:", err))
 
-    axios.post("http://localhost:8000/offers/create", {    
-        owner : 5,
-        item: 5,
-        quantity: 1,
-        price : inputValue
 
-    }).then((res) =>{ 
-        console.log(res)
-        
-    }).catch((err) => console.log("error:", err))
-*/
     console.log({    
         item_id: id,
         item_name: name,
@@ -130,7 +117,7 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
   const buyItem = () => {
     axios.post("http://localhost:8001/transactions", {
         buyer: user.steam_id,
-        seller: ownerId,
+        seller: owner.steam_id,
         price: price,
         offerId: offerAciveId,
         item: {
@@ -223,11 +210,11 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
                             <h1 className="text-xl mb-4">Seller:</h1>
                             <div className="flex items-center  bg-gray-800 rounded-xl">
                                 <img 
-                                    src={sellerData.avatarLink}
+                                    src={owner.avatar_url}
                                     className="rounded-full"
                                 />
                                 <div className="flex-col ml-4">
-                                    <p className="mx-auto font-bold">{sellerData.username}</p>
+                                    <p className="mx-auto font-bold">{owner.username}</p>
                                 </div>
                             </div>
                         </div>
@@ -239,7 +226,7 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
                                         class="bg-[#242633] border-0 border-b-2 border-white text-white focus:outline-none focus:border-green-300 block mb-4 focus:ring-0"
                                         onChange={handleInputChange}
                                       /> : <></>}
-                            <button className={`bg-emerald-700 rounded-l p-2 px-16 mb-8 transition hover:bg-emerald-600 ${ownerId && offerAciveId == user.steam_id ? 'hidden' : ''}`} onClick={true ? createOffer : buyItem}>
+                            <button className={`bg-emerald-700 rounded-l p-2 px-16 mb-8 transition hover:bg-emerald-600 ${owner.steam_id && offerAciveId == user.steam_id ? 'hidden' : ''}`} onClick={true ? createOffer : buyItem}>
                                 {isOwner ? <><i class="fa-solid fa-tag"></i> &nbsp; List</> : <><i class="fa-solid fa-cart-shopping"></i> &nbsp; Buy now</>}
                             </button>
                         </div>
