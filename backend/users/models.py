@@ -6,8 +6,8 @@ class User(AbstractUser):
     user_id = models.AutoField(primary_key=True)
     username = models.TextField(unique=True)
     steam_id = models.TextField()
-    avatar_url = models.TextField()
-    steam_tradelink = models.TextField(blank=True)
+    avatar_url = models.TextField(blank=True, null=True)
+    steam_tradelink = models.TextField(blank=True, null=True)
     is_admin = models.BooleanField(default=False)
     password = models.CharField(max_length=128, blank=True, default="")
     class Meta:

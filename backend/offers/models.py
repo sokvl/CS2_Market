@@ -6,7 +6,6 @@ class Offer(models.Model):
     offer_id = models.AutoField(primary_key=True)
     owner = models.ForeignKey(get_user_model(), related_name="selling_offer", on_delete=models.CASCADE)
     creation_date = models.DateField(default=timezone.now)
-    sale_date = models.DateField(null=True)
     is_active = models.BooleanField(default=True)
     item = models.OneToOneField('Item', on_delete=models.CASCADE)
     price = models.FloatField()
