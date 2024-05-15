@@ -13,7 +13,7 @@ const LoginSuccess = () => {
     useEffect( () => {
       loginUser()
       setLogged(logged => !logged)
-      navigate('/');
+      navigate("/");
     }, [])
 
   return (

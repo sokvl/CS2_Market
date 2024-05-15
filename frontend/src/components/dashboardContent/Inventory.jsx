@@ -46,7 +46,7 @@ const Inventory = () => {
               condition={auction?.wear} 
               target='usersItems'
               rarityColor={auction.color}
-              ownerId={user.steam_id}
+              owner={user}
               isOwnOffer={true}
               inspectLink={auction.inspectlink == null ? "none" : auction.inspectlink}
               stickerElement={auction.descriptions[auction.descriptions.length - 1].value}

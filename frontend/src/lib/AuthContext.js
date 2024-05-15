@@ -11,6 +11,7 @@ export const AuthProvider = ({children}) => {
 
     const [user, setUser] = useState(null);
     const [authTokens, setAuthTokens] = useState(null);
+    const [logged, setLogged] = useState(false);
 
     let loginUser = async () => {
         const tempTokens = {
@@ -42,6 +43,7 @@ export const AuthProvider = ({children}) => {
     const logoutUser = () => {
         setAuthTokens(null)
         setUser(null)
+        setLogged(false)
         localStorage.removeItem("access")
         localStorage.removeItem("refresh")
     }
@@ -56,14 +58,14 @@ export const AuthProvider = ({children}) => {
 
     useEffect(()=> {
 
-        let tokens = { 
-            access: localStorage.getItem("access"),
-            refresh: localStorage.getItem("refresh")
-        }
-
-        if(tokens.access != null) {
+        if(authTokens == null && !logged) {
+            let tokens = { 
+                access: localStorage.getItem("access"),
+                refresh: localStorage.getItem("refresh")
+            }
             setAuthTokens(tokens)
             setUser(jwtDecode(tokens.access.toString()))
+            setLogged(true)
         }
 
         let timeInterval = 270000
@@ -74,8 +76,7 @@ export const AuthProvider = ({children}) => {
             }
         }, timeInterval)
         return ()=> clearInterval(interval)
-
-    }, [authTokens])
+    }, [authTokens, logged])
 
     return(
         <AuthContext.Provider value={contextData}>

@@ -16,6 +16,7 @@ class OfferViewSet(viewsets.ModelViewSet):
     filterset_class = OfferFilter
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+
 #################
 # Item section #
 ###############
