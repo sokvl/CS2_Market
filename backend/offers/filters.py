@@ -17,13 +17,15 @@ class ItemFilter(django_filters.FilterSet):
 class OfferFilter(django_filters.FilterSet):
     price_min = django_filters.NumberFilter(field_name='price', lookup_expr='gte')
     price_max = django_filters.NumberFilter(field_name='price', lookup_expr='lte')
-   # item = django_filters.RelatedFilter(ItemFilter, field_name='item', queryset=Item.objects.all())
     item_name = django_filters.CharFilter(field_name='item__item_name', lookup_expr='icontains')
-    item_condition = django_filters.CharFilter(field_name='item__condition', lookup_expr='iexact')
-    item_category = django_filters.CharFilter(field_name='item__category', lookup_expr='iexact')
+    item_condition = django_filters.CharFilter(field_name='item__condition', lookup_expr='iexact', method='filter_condition')
+    item_category = django_filters.CharFilter(field_name='item__category', lookup_expr='iexact', method='filter_condition')
     listed_after = django_filters.DateFilter(field_name='item__creation_date', lookup_expr='gte')
     listed_before = django_filters.DateFilter(field_name='item__creation_date', lookup_expr='lte')
 
+    def filter_condition(self, queryset, name, value):
+        conditions = value.split(',')
+        return queryset.filter(**{name + '__in': conditions})
 
     class Meta:
         model = Offer
