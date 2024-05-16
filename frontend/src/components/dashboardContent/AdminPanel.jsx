@@ -11,6 +11,8 @@ const AdminPanel = ({steamid}) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const [selectedOption, setSelectedOption] = useState('option1');
+    const [activeView, setActiveView] = useState('view1');
+
     const [selectedStars, setSelectedStars] = useState(0);
     const [selectedStars2, setSelectedStars2] = useState(0);
 
@@ -25,16 +27,24 @@ const AdminPanel = ({steamid}) => {
         setSelectedOption(event.target.value);
     };
 
+    const handleViewChange = (event) => {
+        setActiveView(event.target.value);
+    };
+
     const handleRaportGenerate = () => {
-      if(selectedStars > selectedStars2 && selectedStars2 === 0) {
+      if(selectedStars === 0 || selectedStars2 === 0) {
+        alert('Wybierz zakres ocen');
+        return;
+      }
+      if(selectedStars > selectedStars2) {
         alert('Zakres ocen jest niepoprawny');
         return;
-      } 
+      }
+
         axios.get(`http://localhost:8000/reports/rating/?min_rating=${selectedStars}&max_rating=${selectedStars2}`)
        .then((response) => {
           
           setData(response.data);
-          console.log(data);
           setShowPopup(true);
           setIsLoading(true);
           setTimeout(() => {
@@ -48,7 +58,6 @@ const AdminPanel = ({steamid}) => {
        });
 
     }
-
 
       const renderForm = () => {
         
@@ -146,19 +155,29 @@ const AdminPanel = ({steamid}) => {
                     ) : (
                       <>
                         <h1 className='text-3xl text-center mb-4'> Raport results</h1>
-                        <p className='text-xl text-center'>Users with rating between {selectedStars} and {selectedStars2} <i className="fa-solid fa-star "></i></p>
-                        <div className="grid grid-cols-1 p-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-8">
-                          {data.map((user) => (
-                            <div key={user.id} className="bg-[#242633] p-4 rounded-xl w-full sm:w-auto">
-                              <img src={user.avatar_url} width='100%' height='100%'
-                                className="rounded-full border bg-black" alt="User Avatar"
-                              />                
-                              <p className='mt-4 text-center text-xl'>{user.username}</p>
-                              <p className='mt-4 text-center text-sm'>Average rating:</p>
-                              <p className='mt-1 text-center text-md'>{user.average_rating} / 5.00</p>
-                            </div>
-                          ))}
-                        </div>
+                        <p className='text-xl text-center'>Users with average rating between {selectedStars} and {selectedStars2} <i className="fa-solid fa-star "></i></p>
+                        <table className="mt-8 w-full min-w-max table-auto text-left">
+                          <thead>
+                            <tr className='text-xl'>
+                              <th className="text-center">#</th>
+                              <th className="text-center">avatar</th>
+                              <th className="text-center">username</th>
+                              <th className="text-center">avg rating</th>
+                              <th className="text-center">no rates</th>
+                            </tr>
+                          </thead>
+                              {data.map((user, i) => (
+                                <tbody key={i}>
+                                  <tr>
+                                    <td className="text-center">{i+1}</td>
+                                    <td className="text-center"><img src={user.avatar_url} alt="avatar" className="w-10 h-10 rounded-full mx-auto" /></td>
+                                    <td className="text-center">{user.username}</td>
+                                    <td className="text-center">{user.average_rating}</td>
+                                    <td className="text-center">{user.number_of_ratings}</td>
+                                  </tr>
+                                </tbody>
+                              ))}
+                        </table>
                       </>
                     )}
 
