@@ -15,7 +15,7 @@ class Offer(models.Model):
         db_table = 'Offers'
 
     def __str__(self):
-        return f'O: {self.owner},  I: {self.item}'
+        return f'O: {self.owner},  I: {self.item}, Is active: {self.is_active}'
 
 
 
