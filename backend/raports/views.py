@@ -56,18 +56,24 @@ class TransactionReport(APIView):
                         is_closed=True,
                         closed_date__date=current_date,
                         offer__price__gte=min_price,
-                        offer__price__lte=max_price
+                        offer__price__lte=max_price,
+                        offer__item__category=category
+                    ).aggregate(
+                        average_price=Avg('offer__price'),
+                        total_price=Sum('offer__price'),
+                        quantity=Count('offer__offer_id')
                     )
-                    if daily_transactions.exists():
-                        transactions_list = list(daily_transactions.values())
+                    
+                    if daily_transactions['quantity'] > 0:
                         transaction_reports.append({
                             'date': current_date,
-                            'transactions': transactions_list
+                            'average_price': daily_transactions['average_price'],
+                            'total_price': daily_transactions['total_price'],
+                            'quantity': daily_transactions['quantity'],
                         })
                     current_date = next_day
-
-                serialized_reports = [{'date': report['date'], 'transactions': report['transactions']} for report in transaction_reports]
-                return JsonResponse({'transaction_reports': serialized_reports})
+                return JsonResponse({'transaction_reports': transaction_reports}, json_dumps_params={'indent': 2})
+                
             else:
                 return JsonResponse({'error': 'Missing Date Fields'}, status=400)
         except ValueError:
