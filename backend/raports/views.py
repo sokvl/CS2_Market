@@ -72,8 +72,27 @@ class TransactionReport(APIView):
                             'quantity': daily_transactions['quantity'],
                         })
                     current_date = next_day
-                return JsonResponse({'transaction_reports': transaction_reports}, json_dumps_params={'indent': 2})
-                
+
+
+                total_transactions = Transaction.objects.filter(
+                    is_closed = True,
+                    closed_date__date__gte=start_date,
+                    closed_date__date__lte=end_date,
+                    offer__price__gte=min_price,
+                    offer__price__lte=max_price,
+                    offer__item__category = category
+
+                ).aggregate(
+                    average_price=Avg('offer__price'),
+                    total_price=Sum('offer__price'),
+                    quantity=Count('offer__offer_id')
+                )
+                return JsonResponse(
+                    {
+                        'transaction_reports': transaction_reports,
+                        'total_transactions': total_transactions 
+                    }, json_dumps_params={'indent': 2})
+               
             else:
                 return JsonResponse({'error': 'Missing Date Fields'}, status=400)
         except ValueError:
