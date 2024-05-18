@@ -13,8 +13,9 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('login/bridge/', steam_bridge),
     ### Payment ###
-    path('payment/<int:amount>', create_checkout_session),
-    path('success/', stripe_webhook),
+    path('payment/<int:amount>/<str:user_id>/', create_checkout_session),
+    path('web_hook/', stripe_webhook),
+
     ### Inventory Views ###
     path('inv/<str:user_id>', get_user_inventory),
     path('inv/item/', get_item_details),

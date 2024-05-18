@@ -20,10 +20,15 @@ const UserDashboard = () => {
 
   const [isAdmin, setIsAdmin] = useState(true);
 
-  const [profileData, setprofileData] = useState({});
+  const [walletBalance, setWalletBalance] = useState({});
 
   useEffect(() => {
-
+    const getUserBalance = async () => {
+      await axios.get(`http://localhost:8000/users/wallet/${user.steam_id}/`)
+      .then(res => setWalletBalance(res.data))
+      .catch(err => console.log(err))
+    }
+    getUserBalance()
   }, [user.steam_id]);
 
   const getLinkClassName = (pathname) => {
@@ -37,7 +42,7 @@ const UserDashboard = () => {
           <div className={`${isDarkMode ? 'bg-[#242633]' : 'bg-gradient-to-r from-blue-800 to-blue-900 text-white'} md:w-1/4 p-4 rounded-xl`}>
             <div className="flex flex-col text-sm items-center justify-center">
               <img src={user.avatar} className="rounded-full border bg-black" width={96} height={96} alt="User Avatar" />
-              <h1 className="text-2xl mt-2">{profileData.username}</h1>
+              <h1 className="text-2xl mt-2">{user.username}</h1>
             </div>
             <div className='text-md mt-4'>
               <p className="text-sm text-zinc-400 mb-2">Menu</p>
@@ -85,7 +90,7 @@ const UserDashboard = () => {
           <div className='md:w-3/4'>
             {location.pathname === '/UserDashboard/Settings' ? <Settings tl={"TODO"} steamid={user.steam_id}/> : <></>}           
             {location.pathname === '/UserDashboard/Inventory' ? <Inventory /> : <></>}
-            {location.pathname === '/UserDashboard/Wallet' ? <WalletManagment walletOwner={user.steam_id} balance={12}/> : <></>}
+            {location.pathname === '/UserDashboard/Wallet' ? <WalletManagment walletOwner={user.steam_id} balance={walletBalance.balance}/> : <></>}
             {location.pathname === '/UserDashboard/ActiveOffers' ? <UserOffers creatorId={user.steam_id}></UserOffers> : <></>}
             {location.pathname === '/UserDashboard/Delivery' ? <Delivery ownerId={user.steam_id}/> : <></>}
             {location.pathname === '/UserDashboard/AdminPanel' ? <AdminPanel steamid={user.steam_id}/> : <></>}
