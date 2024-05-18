@@ -24,7 +24,7 @@ const WalletManagment = ({walletOwner, balance}) => {
       const stripe = await loadStripe(key);
 
       //pobieram sessionId z backendu
-      const response = await axios.get(`http://localhost:8000/payment/${inputValue}`);          
+      const response = await axios.get(`http://localhost:8000/payment/${inputValue}/${walletOwner}`);          
       console.log(response);
       const sessionId = response.data.sessionId;
       

@@ -58,7 +58,7 @@ export const AuthProvider = ({children}) => {
 
     useEffect(()=> {
 
-        if(authTokens == null && logged) {
+        if(authTokens == null && localStorage.getItem("access")) {
             let tokens = { 
                 access: localStorage.getItem("access"),
                 refresh: localStorage.getItem("refresh")
