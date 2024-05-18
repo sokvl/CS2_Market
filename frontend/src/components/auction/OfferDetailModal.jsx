@@ -115,19 +115,11 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
   
 
   const buyItem = () => {
-    axios.post("http://localhost:8001/transactions", {
-        buyer: user.steam_id,
-        seller: owner.steam_id,
-        price: price,
-        offerId: offerAciveId,
-        item: {
-            id: id,
-            name: name,
-            imageLink: imageLink,
-            stickerString: stickerString,
-            inspectLink: inspectLink,
-            rarityColor: rarityColor,
-            category: category
+    axios.post("http://localhost:8000/transactions/", {
+        buyer: user.steam_id.toString(),
+        offer: offerAciveId,
+    },{ headers: {
+            Authorization: `Bearer ${localStorage.getItem("access")}`
         }
     }).then(res => {
         setbuySuccess(true);
@@ -226,7 +218,7 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
                                         class="bg-[#242633] border-0 border-b-2 border-white text-white focus:outline-none focus:border-green-300 block mb-4 focus:ring-0"
                                         onChange={handleInputChange}
                                       /> : <></>}
-                            <button className={`bg-emerald-700 rounded-l p-2 px-16 mb-8 transition hover:bg-emerald-600 ${owner.steam_id && offerAciveId == user.steam_id ? 'hidden' : ''}`} onClick={true ? createOffer : buyItem}>
+                            <button className={`bg-emerald-700 rounded-l p-2 px-16 mb-8 transition hover:bg-emerald-600 ${owner.steam_id && offerAciveId == user.steam_id ? 'hidden' : ''}`} onClick={false ? createOffer : buyItem}>
                                 {isOwner ? <><i class="fa-solid fa-tag"></i> &nbsp; List</> : <><i class="fa-solid fa-cart-shopping"></i> &nbsp; Buy now</>}
                             </button>
                         </div>

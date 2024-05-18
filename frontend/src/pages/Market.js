@@ -174,7 +174,7 @@ export default function Market() {
                   stickerElement={auction.item.stickerstring}
                   isOwnOffer={false}
                   rarityColor={auction.item.rarity}
-                  offerActiveId={auction._id}
+                  offerActiveId={auction.offer_id}
                   condition={auction.item.condition}
                 />
               </div>
