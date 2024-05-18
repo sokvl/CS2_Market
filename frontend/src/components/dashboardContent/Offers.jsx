@@ -8,9 +8,9 @@ const UserOffers = ({creatorId}) => {
 
   useEffect(() =>{
     const fetchOffers = async () => {
-        const userOffers = await axios.get(`http://localhost:8001/offers/byCreator/${creatorId}`);
-        setOffers(userOffers.data.filter(item => item.isActive === true))
-        
+        const userOffers = await axios.get(`http://localhost:8000/offers?owner__steam_id=${creatorId}`);
+        setOffers(userOffers.data.filter(item => item.is_active === true))
+
     }
     fetchOffers();
   }, [])
