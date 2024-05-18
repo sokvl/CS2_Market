@@ -21,11 +21,20 @@ const UserDashboard = () => {
   const [isAdmin, setIsAdmin] = useState(true);
 
   const [walletBalance, setWalletBalance] = useState({});
-
+  const [tradeLink, setTradelink] = useState("Please provide tradelink!");
   useEffect(() => {
     const getUserBalance = async () => {
       await axios.get(`http://localhost:8000/users/wallet/${user.steam_id}/`)
       .then(res => setWalletBalance(res.data))
+      .catch(err => console.log(err))
+
+      /**
+       * TODO:
+       * Have to customize responses, because two requests is too much..
+       */
+
+      await axios.get(`http://localhost:8000/users/${user.steam_id}`)
+      .then(res => setTradelink(res.data.steam_tradelink))
       .catch(err => console.log(err))
     }
     getUserBalance()
@@ -88,7 +97,7 @@ const UserDashboard = () => {
             </div>
           </div>
           <div className='md:w-3/4'>
-            {location.pathname === '/UserDashboard/Settings' ? <Settings tl={"TODO"} steamid={user.steam_id}/> : <></>}           
+            {location.pathname === '/UserDashboard/Settings' ? <Settings tl={tradeLink} steamid={user.steam_id}/> : <></>}           
             {location.pathname === '/UserDashboard/Inventory' ? <Inventory /> : <></>}
             {location.pathname === '/UserDashboard/Wallet' ? <WalletManagment walletOwner={user.steam_id} balance={walletBalance.balance}/> : <></>}
             {location.pathname === '/UserDashboard/ActiveOffers' ? <UserOffers creatorId={user.steam_id}></UserOffers> : <></>}

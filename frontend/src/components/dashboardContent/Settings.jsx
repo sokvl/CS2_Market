@@ -27,7 +27,7 @@ const Settings = ({tl, steamid}) => {
 
     const setTradelink = () => {
         if (isValidSteamTradeLink(inputValue)) {
-            axios.post(`http://localhost:8001/users/${steamid}`, {tradelink: inputValue})
+            axios.patch(`http://localhost:8000/users/${steamid}/`, {steam_tradelink: inputValue})
             .then((res) => 
             {
                 setreloadState(prev => !prev);
