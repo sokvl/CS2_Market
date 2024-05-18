@@ -1,4 +1,5 @@
-from datetime import timezone
+import json
+from django.utils import timezone
 from transactions.models import Transaction
 from rest_framework import generics
 from rest_framework.views import APIView
@@ -6,7 +7,10 @@ from rest_framework.response import Response
 from django.db.models import Avg, Count, Sum
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
-
+from django.core.serializers import serialize
+from datetime import timedelta
+from datetime import date
+from django.utils.dateparse import parse_date
 
 from api.serializers.Raports_serializers import UserRatingSerializer
 
@@ -31,37 +35,65 @@ class RatingReport(APIView):
 
 class TransactionReport(APIView):
     def get(self, request):
-        start_date = request.query_params.get('start_date', None)
+        start_date = request.query_params.get('start_date', None) # YYYY-MM-DD
         end_date = request.query_params.get('end_date', None)
         category = request.query_params.get('category', None)
         min_price = request.query_params.get('min_price', None)
         max_price = request.query_params.get('max_price', None)
 
+        try:
+            if start_date and end_date and end_date > start_date:
+                print("Start date:", start_date)
+                print("End date:", end_date)
+                start_date = parse_date(start_date)
+                end_date = parse_date(end_date)
+                current_date = start_date
+                transaction_reports = []
 
-        if start_date and end_date:
-            try:
-                start_date = timezone.make_aware(timezone.datetime.strptime(start_date, '%Y-%m-%d'))
-                end_date = timezone.make_aware(timezone.datetime.strptime(end_date, '%Y-%m-%d'))
-            except ValueError:
-                return JsonResponse({'error': 'Incorrect date format'}, status=400)
+                while current_date <= end_date:
+                    next_day = current_date + timedelta(days=1)
+                    daily_transactions = Transaction.objects.filter(
+                        is_closed=True,
+                        closed_date__date=current_date,
+                        offer__price__gte=min_price,
+                        offer__price__lte=max_price,
+                        offer__item__category=category
+                    ).aggregate(
+                        average_price=Avg('offer__price'),
+                        total_price=Sum('offer__price'),
+                        quantity=Count('offer__offer_id')
+                    )
+                    
+                    if daily_transactions['quantity'] > 0:
+                        transaction_reports.append({
+                            'date': current_date,
+                            'average_price': daily_transactions['average_price'],
+                            'total_price': daily_transactions['total_price'],
+                            'quantity': daily_transactions['quantity'],
+                        })
+                    current_date = next_day
 
-            transaction_report = Transaction.objects.filter(
-                created_at__date__gte=start_date,
-                created_at__date__lte=end_date
-            ).values('created_at__date').annotate(
-                avg_price=Avg('value'),
-                total_transactions=Sum(1),
-                total_amount=Sum('value')
-            )
 
-            total_transactions = sum(item['total_transactions'] for item in transaction_report)
-            total_amount = sum(item['total_amount'] for item in transaction_report)
+                total_transactions = Transaction.objects.filter(
+                    is_closed = True,
+                    closed_date__date__gte=start_date,
+                    closed_date__date__lte=end_date,
+                    offer__price__gte=min_price,
+                    offer__price__lte=max_price,
+                    offer__item__category = category
 
-            return JsonResponse({
-                'transaction_report': list(transaction_report),
-                'total_transactions': total_transactions,
-                'total_amount': total_amount
-            })
-
-        else:
-            return JsonResponse({'error': 'Missing date fields data'}, status=400)
+                ).aggregate(
+                    average_price=Avg('offer__price'),
+                    total_price=Sum('offer__price'),
+                    quantity=Count('offer__offer_id')
+                )
+                return JsonResponse(
+                    {
+                        'transaction_reports': transaction_reports,
+                        'total_transactions': total_transactions 
+                    }, json_dumps_params={'indent': 2})
+               
+            else:
+                return JsonResponse({'error': 'Missing Date Fields'}, status=400)
+        except ValueError:
+            return JsonResponse({'error': 'Incorrect date format'}, status=400)

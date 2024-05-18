@@ -10,7 +10,7 @@ from .filters import OfferFilter
 import django_filters
 
 class OfferViewSet(viewsets.ModelViewSet):
-    queryset = Offer.objects.all()
+    queryset = Offer.objects.filter(is_active=True)
     serializer_class = OfferSerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     filterset_class = OfferFilter
