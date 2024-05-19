@@ -22,17 +22,7 @@ class Transaction(models.Model):
 
     def __str__(self):
         return f'{self.offer},  B: {self.buyer}'
-    
-    def save(self, *args, **kwargs):
-        if self.offer.is_active:
-            self.offer.is_active = False
-            self.offer.save()
-        super().save(*args, **kwargs)
-
-@receiver(pre_save, sender=Transaction)
-def update_closed_date(sender, instance, **kwargs):
-    if instance.is_closed and not instance.closed_date:
-        instance.closed_date = timezone.now()
+        
 
 
 class Rating (models.Model):
