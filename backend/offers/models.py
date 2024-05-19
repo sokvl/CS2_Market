@@ -26,7 +26,7 @@ class Item(models.Model):
     condition = models.CharField(max_length=2, blank=True, null=True)
     stickerstring = models.TextField(blank=True, null=True)
     inspect = models.TextField(unique=True)
-    rarity = models.TextField()
+    rarity = models.TextField(blank=True, null=True)
     category = models.TextField()
     listed = models.BooleanField(default=False)
     tradeable = models.BooleanField(default=True)
@@ -35,4 +35,4 @@ class Item(models.Model):
         db_table = 'Items'
 
     def __str__(self):
-        return f'{self.item_name},  {self.condition}'
+        return f'{self.item_name} {self.condition}'
