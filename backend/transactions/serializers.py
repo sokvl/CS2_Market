@@ -13,6 +13,11 @@ class RatingSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class NotificationSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
     class Meta:
         model = Notification
         fields = '__all__'
+
+    def get_user(self, obj):
+        return obj.transaction.offer.owner.username

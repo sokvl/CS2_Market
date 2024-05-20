@@ -36,6 +36,12 @@ class RatingViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 class NotificationViewSet(viewsets.ModelViewSet):
-    queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        print(f'Fetching notifications for user: {user}')
+        queryset = Notification.objects.filter(transaction__offer__owner=user, active=True)
+        print(f'Queryset: {queryset}')
+        return queryset
