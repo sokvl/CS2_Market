@@ -1,39 +1,38 @@
 import React, {useState, useEffect, useContext} from 'react'
 import axios from 'axios';
 import Auction from '../auction/Auction';
-
+import Spinner from '../loadingScene/Spinner';
 import AuthContext from '../../lib/AuthContext';
 
 
 const Inventory = () => {
 
   const { user } = useContext(AuthContext);
-
   const [items, setItems] = useState([]);
-  let bool = true;
+
+  const [isLoading, setIsLoading] = useState(false); 
+
   useEffect(() => {
-    const fetchData = async () => {    
-        if (bool)  {
+    const fetchData = async () => {  
+      setIsLoading(true);  
         try {
           let data = await axios.get(`http://localhost:8000/inv/${user.steam_id}`)
-          console.log(data)
           setItems(data.data.inventory);
-          bool = !bool
-          console.log(data.data)
+
         } catch (error) {
           console.error('Error fetching data:', error);
-        }
-      }
+        }  
+        setIsLoading(false);
     };
 
     fetchData();
     
   }, []);
 
-
   return (
-    items.length == 0 ? <></> :
     <>
+    {isLoading ? <Spinner /> :
+
       <div className='flex flex-wrap '>          
         {items.map((auction, i) => (
           <div key={i}>
@@ -56,7 +55,8 @@ const Inventory = () => {
           </div>
         ))}
       </div>
-    </>
+    } 
+  </>
   );
 }
 

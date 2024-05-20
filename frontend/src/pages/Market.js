@@ -5,6 +5,7 @@ import '../styles/contact.css';
 import axios from 'axios';
 import { useTheme } from '../ThemeContext';
 import { Auction } from '../components/index';
+import Spinner from '../components/loadingScene/Spinner';
 
 Modal.setAppElement('#root'); 
 
@@ -17,7 +18,7 @@ export default function Market() {
   const [catfilters, setcatFilters] = useState([]);
   const [condFilters, setcondFilters] = useState([]);
 
-  const [isSet, setisSet] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   let checkBoxState = [true, true,true,true,true,true,true,true,true,true,true,true,true,true,true]
 
@@ -31,19 +32,21 @@ export default function Market() {
 
   const fetchData = async () => {
     try {
+      setIsLoading(true);
+
       const categoriesParam = selectedCategories.join('&category=');
       const conditionsParam = selectedConditions.join('&condition=');
-
       const dataResponse = await axios.get(`http://localhost:8000/offers/?item_category=${categoriesParam}&price_min=${minPrice}&price_max=${maxPrice}&item_condition=${conditionsParam}&item_name=${itemName}`);
       const auctionsData = dataResponse.data;
 
       setOffers(auctionsData);
       setItems(auctionsData);
       setdisplayItems(auctionsData)
-      setisSet(true)
+
     } catch (error) {
       console.error('Error fetching data:', error);
     }
+    setIsLoading(false);
   };
 
   const handleFilter = () => {
@@ -88,16 +91,9 @@ export default function Market() {
     }
   };
 
-  
   useEffect(() => {
-    if(!isSet) {
-      fetchData()
-      //setcondFilters([...conditions])
-      //setcatFilters([...categories])
-    }
-   // filterConditions();
-    
-  }, [condFilters, catfilters]);
+    fetchData();
+  }, []);
 
 
   const [open, setOpen] = useState(true);
@@ -161,25 +157,27 @@ export default function Market() {
             </div>
           </div>      
         <div class="w-5/6 p-8 lg:h-auto overflow-auto">
-          <div className='flex flex-wrap'>      
-            {displayItems.map((auction, i) => (
-              <div key={i} className='min-w-fit'>
-                <Auction 
-                  id={auction.item.item_id} 
-                  title={auction.item.item_name} 
-                  image={auction.item.img_link} 
-                  price={auction.price}  
-                  owner={auction.owner} 
-                  inspectLink={auction.item.inspect == null ? "none" : auction.item.inspect}
-                  stickerElement={auction.item.stickerstring}
-                  isOwnOffer={false}
-                  rarityColor={auction.item.rarity}
-                  offerActiveId={auction.offer_id}
-                  condition={auction.item.condition}
-                />
-              </div>
-            ))}
-          </div>
+          {isLoading ? <Spinner /> :
+            <div className='flex flex-wrap'>      
+              {displayItems.map((auction, i) => (
+                <div key={i} className='min-w-fit'>
+                  <Auction 
+                    id={auction.item.item_id} 
+                    title={auction.item.item_name} 
+                    image={auction.item.img_link} 
+                    price={auction.price}  
+                    owner={auction.owner} 
+                    inspectLink={auction.item.inspect == null ? "none" : auction.item.inspect}
+                    stickerElement={auction.item.stickerstring}
+                    isOwnOffer={false}
+                    rarityColor={auction.item.rarity}
+                    offerActiveId={auction.offer_id}
+                    condition={auction.item.condition}
+                  />
+                </div>
+              ))}
+            </div>
+            }
         </div>
       </div>
 

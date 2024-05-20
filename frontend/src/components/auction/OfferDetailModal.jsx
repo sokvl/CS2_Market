@@ -3,38 +3,41 @@ import axios from 'axios'
 import Success from '../success/Succes';
 import AuthContext from '../../lib/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import Spinner from '../../components/loadingScene/Spinner';
 
 const OfferDetailModal = ({closerHandler, category, rarityColor, 
     imageLink, inspectLink, name, isOwner, 
     steam_price, price , id, stickerString, owner, offerAciveId, condition,tradeable}) => 
     {
         let navigate = useNavigate()
-        const [itemDetails, setitemDetails] = useState([])
+        const [itemDetails, setItemDetails] = useState([])
         const [ownerData, setOwnerData] = useState([])
         const [stickerInfo, setStickerInfo] = useState([])
         const [stickerLabels, setStickerLabels] = useState([])
         const [inputValue, setinputValue] = useState("")
-        const [itemsSet, setitemsSet] = useState(false);
+
         const [sellerData, setSellerData] = useState([]);
         const [buySuccess, setbuySuccess] = useState(false);
+
+        const [isLoading, setIsLoading] = useState(false)
 
     const { user } = useContext(AuthContext)
 
     useEffect(() => {
         const fetchItemDetails = async () =>  {
+            setIsLoading(true);
             try {
-            axios.post(`http://localhost:8000/inv/item/`, { "inspect_link": inspectLink})
-            .then((response) => setitemDetails(response.data.item_details))
-            .catch((err) => console.log(err))
-            console.log(itemDetails)
+                axios.post(`http://localhost:8000/inv/item/`, { "inspect_link": inspectLink})
+                .then((response) => setItemDetails(response.data.item_details))
+                .catch((err) => console.log(err))
+            
         } catch (err) {
             console.log(err);
         }
+        
     }
-
     
     fetchItemDetails()
-
 
     if (stickerString) {
         const srcRegex = /<img[^>]+src="([^">]+)"/g;
@@ -55,8 +58,9 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
     
         setStickerInfo(srcValues);
         setStickerLabels(stickerNames);
-        setitemsSet(true);
+
     }
+    setIsLoading(false);
  }, [])
 
  const handleInputChange = (e) => {
@@ -141,8 +145,9 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
                         X
                     </button>
                 </div>
-                <div className=' max-h-[70vh]'>
-                    <div className="flex flex-col mt-auto">
+                
+                <div className='max-h-[70vh]'>    
+                    <div className="flex flex-col mt-auto">                     
                         <div className="p-2 
                             bg-[url('https://t4.ftcdn.net/jpg/03/01/90/79/360_F_301907970_ZVaPcSGe9rgYgRMRGUcbf91YxNwB7d2W.jpg')]
                             border-b-4 border-b-[#5e98d9]">
@@ -222,8 +227,10 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
                                 {isOwner ? <><i class="fa-solid fa-tag"></i> &nbsp; List</> : <><i class="fa-solid fa-cart-shopping"></i> &nbsp; Buy now</>}
                             </button>
                         </div>
+                    
                     </div>
                 </div>
+                    
                 </> }
             </div>
         </div>
