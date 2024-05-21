@@ -9,7 +9,7 @@ const AdminPanel = ({steamid}) => {
 
     const [showPopup, setShowPopup] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [raport1, setRaport1] = useState(false);
+    const [raport1, setRaport1] = useState(true);
     const [raport2, setRaport2] = useState(false);
 
     const [selectedOption, setSelectedOption] = useState('option1');
@@ -35,6 +35,7 @@ const AdminPanel = ({steamid}) => {
     };
 
     const handleRadioChange = (event) => {
+        
         if(event.target.value === 'option1') {
           setRaport1(true);
           setRaport2(false);
@@ -245,7 +246,7 @@ const AdminPanel = ({steamid}) => {
                         </thead>
                         <tbody>
                           {raport1Data.map((user, i) => (
-                            <tr key={i}>
+                            <tr className='border-b' key={i}>
                               <td className="text-center">{i+1}</td>
                               <td className="text-center"><img src={user.avatar_url} alt="avatar" className="w-10 h-10 rounded-full mx-auto" /></td>
                               <td className="text-center">{user.username}</td>
@@ -278,7 +279,7 @@ const AdminPanel = ({steamid}) => {
                                     <p className='text-xl text-center'>Transactions between {priceMin} and {priceMax} $ from {startDate} to {endDate} in category: {selectedCategory}</p>
                                     <table className="mt-8 w-full min-w-max table-auto text-left">
                                       <thead>
-                                        <tr className='text-xl'>
+                                        <tr className='text-x borderl'>
                                           <th className="text-center">#</th>
                                           <th className="text-center">date</th>
                                           <th className="text-center">avg price</th>
@@ -288,7 +289,7 @@ const AdminPanel = ({steamid}) => {
                                       </thead>
                                       <tbody>
                                           {raport2Data.map((user, i) => (
-                                            <tr key={i}>
+                                            <tr className='border' key={i}>
                                               <td className="text-center">{i+1}</td>
                                               <td className="text-center">{user.date}</td>
                                               <td className="text-center">{user.average_price}$</td>
