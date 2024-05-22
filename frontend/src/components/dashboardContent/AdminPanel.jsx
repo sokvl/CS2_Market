@@ -9,7 +9,7 @@ const AdminPanel = ({steamid}) => {
 
     const [showPopup, setShowPopup] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [raport1, setRaport1] = useState(false);
+    const [raport1, setRaport1] = useState(true);
     const [raport2, setRaport2] = useState(false);
 
     const [selectedOption, setSelectedOption] = useState('option1');
@@ -19,6 +19,7 @@ const AdminPanel = ({steamid}) => {
 
     const [raport1Data, setRaport1Data] = useState([]);
     const [raport2Data, setRaport2Data] = useState([]);
+    const [report21Data, setReport21Data] = useState([]);
 
     const [priceMin, setPriceMin] = useState(0);
     const [priceMax, setPriceMax] = useState(0);
@@ -34,6 +35,7 @@ const AdminPanel = ({steamid}) => {
     };
 
     const handleRadioChange = (event) => {
+        
         if(event.target.value === 'option1') {
           setRaport1(true);
           setRaport2(false);
@@ -43,6 +45,9 @@ const AdminPanel = ({steamid}) => {
           setRaport1(false);
         }
         setSelectedOption(event.target.value);
+        setShowPopup(false);
+        setRaport1Data([]);
+        setRaport2Data([]);
         
     };
 
@@ -78,7 +83,7 @@ const AdminPanel = ({steamid}) => {
 
         axios.get(`http://localhost:8000/reports/rating/?min_rating=${selectedStars}&max_rating=${selectedStars2}`)
        .then((response) => {
-          
+          console.log(response);
           setRaport1Data(response.data);
           setShowPopup(true);
           setIsLoading(true);
@@ -109,22 +114,25 @@ const AdminPanel = ({steamid}) => {
         alert('Podaj zakres dat');
         return;
       }
-
+  
       axios.get(`http://localhost:8000/reports/transaction/?min_price=${priceMin}&max_price=${priceMax}&start_date=${startDate}&end_date=${endDate}&category=${selectedCategory}`)
       .then((response) => {
-
-        setRaport2Data(response.data);
-        setShowPopup(true);
-        setIsLoading(true);
-        setTimeout(() => {
-          setIsLoading(false);    
-        }, 2000); 
+   
+         console.log(response.data.transaction_reports);
+         setRaport2Data(response.data.transaction_reports);
+         setReport21Data(response.data.total_transactions);
+         setShowPopup(true);
+         setIsLoading(true);
+         setTimeout(() => {
+           setIsLoading(false);
+           
+         }, 2000); 
+         
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
-
-    }
+     }
 
       const renderForm = () => {
         
@@ -193,6 +201,7 @@ const AdminPanel = ({steamid}) => {
                       <option className="text-black" value="containers">Containers</option>
                       <option className="text-black" value="gloves">Gloves</option>
                       <option className="text-black" value="agents">Agents</option>
+                      <option className="text-black" value="inne">Inne</option>
                     </select>
                     </div>              
                 </form>
@@ -237,7 +246,7 @@ const AdminPanel = ({steamid}) => {
                         </thead>
                         <tbody>
                           {raport1Data.map((user, i) => (
-                            <tr key={i}>
+                            <tr className='border-b' key={i}>
                               <td className="text-center">{i+1}</td>
                               <td className="text-center"><img src={user.avatar_url} alt="avatar" className="w-10 h-10 rounded-full mx-auto" /></td>
                               <td className="text-center">{user.username}</td>
@@ -255,8 +264,7 @@ const AdminPanel = ({steamid}) => {
               <></>
             )}
 
-
-              {showPopup && !raport1 ? (
+                          {showPopup && raport2 ? (
                             <>
                               <div className="overlay" onClick={() => setShowPopup(false)}></div>
                               <div className="popUp">
@@ -268,6 +276,35 @@ const AdminPanel = ({steamid}) => {
                                 ) : (
                                   <>
                                     <p className='text-3xl text-center mb-4'> Raport2 results</p>
+                                    <p className='text-xl text-center'>Transactions between {priceMin} and {priceMax} $ from {startDate} to {endDate} in category: {selectedCategory}</p>
+                                    <table className="mt-8 w-full min-w-max table-auto text-left">
+                                      <thead>
+                                        <tr className='text-x borderl'>
+                                          <th className="text-center">#</th>
+                                          <th className="text-center">date</th>
+                                          <th className="text-center">avg price</th>
+                                          <th className="text-center">total_price</th>
+                                          <th className="text-center">quantity</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                          {raport2Data.map((user, i) => (
+                                            <tr className='border' key={i}>
+                                              <td className="text-center">{i+1}</td>
+                                              <td className="text-center">{user.date}</td>
+                                              <td className="text-center">{user.average_price}$</td>
+                                              <td className="text-center">{user.total_price}$</td>
+                                              <td className="text-center">{user.quantity}</td>
+                                            </tr>
+                                          ))}
+                                      </tbody>
+                                    </table>
+                                    <p className='text-3xl text-center mt-8'>Total results: </p>
+                                      <div className='mx-auto space-x-4 flex justify-center mt-4'>
+                                        <div className='p-2 text-center border rounded-xl w-28 h-28'> Average price: <p className='mt-2'> {report21Data.average_price}$ </p> </div>
+                                        <div className='p-2 text-center border rounded-xl w-28 h-28'> Quantity: <p className='mt-2'>{report21Data.quantity} transactions </p> </div>
+                                        <div className='p-2 text-center border rounded-xl w-28 h-28'> Money spent: <p className='mt-2'>{report21Data.total_price} $</p> </div>
+                                      </div>
                                   </>
                                 )}
                               </div>

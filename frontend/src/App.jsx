@@ -12,6 +12,7 @@ import UserProfile from './pages/UserProfile';
 
 import PrivateRoute from './utils/PrivateRoute'
 import LoginSuccess from './pages/LoginSuccess';
+import PaymentSuccess from '../src/components/success/Succes';
 
 function App() {
 
@@ -31,6 +32,7 @@ function App() {
                             <Route path='/contact' exact element={<Contact />} />
                             <Route path='/UserDashboard/:section' exact element={<UserDashboard />} />
                             <Route path='/auth_success' exact element={<LoginSuccess />} />
+                            <Route path='/success' exact element={<PaymentSuccess />} />
                         </Routes>
                         <Footer/>
                     </Router>
