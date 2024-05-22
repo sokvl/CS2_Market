@@ -27,7 +27,7 @@ class RatingReport(APIView):
         ).filter(
             average_rating__gte=min_rating,
             average_rating__lte=max_rating
-        )
+        ).order_by('-average_rating')
 
         serializer = UserRatingSerializer(users_with_rating, many=True)
         return Response(serializer.data)
