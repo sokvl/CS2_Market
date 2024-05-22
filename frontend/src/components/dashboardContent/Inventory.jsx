@@ -51,6 +51,7 @@ const Inventory = () => {
               stickerElement={auction.descriptions[auction.descriptions.length - 1].value}
               category={auction.itemgroup}
               tradeable={auction.tradeable}
+              inventory={true}
               />   
           </div>
         ))}

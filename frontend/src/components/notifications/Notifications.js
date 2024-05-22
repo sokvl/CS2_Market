@@ -64,7 +64,7 @@ const Notifications = () => {
                 <div key={item.notification_id} className="p-2 border-dashed border-b my-2 overflow-auto text-sm">
                   <p
                     onClick={() => handleDeleteNotification(item.notification_id)}
-                    className='flex justify-end text-xs hover:cursor-pointer'
+                    className='flex text-red-400 justify-end text-xs hover:cursor-pointer'
                   >
                     X
                   </p>
