@@ -6,7 +6,6 @@ from rest_framework.response import Response
 
 from .models import Transaction, Rating, Notification
 from .serializers import TransactionSerializer, RatingSerializer, NotificationSerializer
-from offers.models import Offer
 
 class TransactionViewSet(viewsets.ModelViewSet):
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
@@ -36,6 +35,10 @@ class RatingViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 class NotificationViewSet(viewsets.ModelViewSet):
-    queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Notification.objects.filter(transaction__offer__owner=user, active=True)
+        return queryset
