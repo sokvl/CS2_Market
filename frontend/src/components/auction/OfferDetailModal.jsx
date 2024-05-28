@@ -7,7 +7,7 @@ import Spinner from '../../components/loadingScene/Spinner';
 
 const OfferDetailModal = ({closerHandler, category, rarityColor, 
     imageLink, inspectLink, name, isOwner, 
-    steam_price, price , id, stickerString, owner, offerAciveId, condition,tradeable}) => 
+    steam_price, price , id, stickerString, inventory, owner, offerAciveId, condition,tradeable}) => 
     {
         let navigate = useNavigate()
         const [itemDetails, setItemDetails] = useState([])
@@ -139,8 +139,8 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
     
         <div className='flex w-full h-full fixed inset-0 backdrop-blur-sm z-[120] bg-black bg-opacity-50 justify-center items-center'>
             <div className='flex flex-col bg-[#242633] text-white p-12 pt-4 rounded-md justify-center overflow-auto shadow-xl'>
-            { buySuccess ? <Success /> : <> 
-                <div className='flex justify-end  sticky'>
+            { buySuccess ? <Success/> : <> 
+                <div className='flex justify-end sticky'>
                     <button className='mb-4' onClick={closerHandler}>
                         X
                     </button>
@@ -223,7 +223,7 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
                                         class="bg-[#242633] border-0 border-b-2 border-white text-white focus:outline-none focus:border-green-300 block mb-4 focus:ring-0"
                                         onChange={handleInputChange}
                                       /> : <></>}
-                            <button className={`bg-emerald-700 rounded-l p-2 px-16 mb-8 transition hover:bg-emerald-600 ${owner.steam_id && offerAciveId == user.steam_id ? 'hidden' : ''}`} onClick={false ? createOffer : buyItem}>
+                            <button className={`bg-emerald-700 rounded-l p-2 px-16 mb-8 transition hover:bg-emerald-600 ${owner.steam_id && offerAciveId == user.steam_id ? 'hidden' : ''}`} onClick={inventory ? createOffer : buyItem}>
                                 {isOwner ? <><i class="fa-solid fa-tag"></i> &nbsp; List</> : <><i class="fa-solid fa-cart-shopping"></i> &nbsp; Buy now</>}
                             </button>
                         </div>
