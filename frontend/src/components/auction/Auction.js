@@ -2,10 +2,16 @@
 import React, {useContext, useState} from 'react'
 import OfferDetailModal from './OfferDetailModal';
 import AuthContext from '../../lib/AuthContext';
+import { useLocation } from 'react-router-dom';
+
 
 const Auction = ({ id, title, offerActiveId, image, price, seed, condition, inventory, rarityColor, owner, isOwnOffer, inspectLink, category, stickerElement, tradeable }) => {
   
   const { user } = useContext(AuthContext)
+  const location = useLocation();
+
+  const isOwner = user.steam_id === owner.steam_id;
+  const isMarketPage = location.pathname === '/market';
 
   const [openModal, setopenModal] = useState(false);
   const modalStateHandler = () => {
@@ -34,7 +40,9 @@ const Auction = ({ id, title, offerActiveId, image, price, seed, condition, inve
         tradeable={tradeable}
         inventory={inventory}
       /> : <></>}
-      <div className='flex flex-col bg-[#1f1d24] p-2 m-2 w-fit rounded-md shadow-xl text-white hover:cursor-pointer' onClick={modalStateHandler}>
+       <div
+      className={`flex flex-col bg-[#1f1d24] p-2 m-2 w-fit rounded-md shadow-xl transform transition duration-300 text-white hover:scale-110 hover:cursor-pointer ${
+        isOwner && isMarketPage ? 'border border-green-500 hover:shadow-lg hover:shadow-green-500/40' : 'hover:shadow-lg hover:shadow-white/20'}`} onClick={modalStateHandler}>
         <div className="flex flex-row border-t-2 border-r-2 border-l-2 w-fit border-[#3b3847]">
           <img src={image}
             className={`border-b-4 w-[144px] h-[108px]`} 

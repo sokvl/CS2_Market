@@ -2,13 +2,20 @@ import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import Success from '../success/Succes';
 import AuthContext from '../../lib/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import Spinner from '../../components/loadingScene/Spinner';
 
 const OfferDetailModal = ({closerHandler, category, rarityColor, 
-    imageLink, inspectLink, name, isOwner, 
+    imageLink, inspectLink, name, isOwner,
     steam_price, price , id, stickerString, inventory, owner, offerAciveId, condition,tradeable}) => 
     {
+        const { user } = useContext(AuthContext)
+
+        const location = useLocation()
+        const isMarketPage = location.pathname === '/market';
+        const isOwn = owner.steam_id === user.steam_id;
+        const shouldHideButton = isOwn && (isMarketPage || offerAciveId === user.steam_id);
+
         let navigate = useNavigate()
         const [itemDetails, setItemDetails] = useState([])
         const [ownerData, setOwnerData] = useState([])
@@ -20,8 +27,6 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
         const [buySuccess, setbuySuccess] = useState(false);
 
         const [isLoading, setIsLoading] = useState(false)
-
-    const { user } = useContext(AuthContext)
     
     useEffect(() => {
         const fetchItemDetails = async () =>  {
@@ -209,10 +214,10 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
                             {owner.steam_id === user.steam_id ?
                              <>
                                 <Link to = {'/UserDashboard/Settings'}>
-                                    <img 
-                                        src={owner.avatar_url}
-                                        className="rounded-full"
-                                    />
+                                <img 
+                                    src={owner.avatar_url}
+                                    className="rounded-full"
+                                />
                                 </Link>
                              </>                            
                             : 
@@ -239,9 +244,23 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
                                         class="bg-[#242633] border-0 border-b-2 border-white text-white focus:outline-none focus:border-green-300 block mb-4 focus:ring-0"
                                         onChange={handleInputChange}
                                       /> : <></>}
-                            <button className={`bg-emerald-700 rounded-l p-2 px-16 mb-8 transition hover:bg-emerald-600 ${owner.steam_id && offerAciveId == user.steam_id ? 'hidden' : ''}`} onClick={inventory ? createOffer : buyItem}>
-                                {isOwner ? <><i class="fa-solid fa-tag"></i> &nbsp; List</> : <><i class="fa-solid fa-cart-shopping"></i> &nbsp; Buy now</>}
-                            </button>
+                                <button
+                                    className={`bg-emerald-700 rounded-l p-2 px-16 mb-8 transition hover:bg-emerald-600 ${
+                                        shouldHideButton ? 'hidden' : ''
+                                    }`}
+                                    onClick={inventory ? createOffer : buyItem}
+                                    disabled={shouldHideButton}
+                                    >
+                                    {isOwner ? (
+                                        <>
+                                        <i className="fa-solid fa-tag"></i> &nbsp; List
+                                        </>
+                                    ) : (
+                                        <>
+                                        <i className="fa-solid fa-cart-shopping"></i> &nbsp; Buy now
+                                        </>
+                                    )}
+                                </button>
                         </div>
                     
                     </div>
