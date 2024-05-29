@@ -38,6 +38,7 @@ export default function Market() {
       const conditionsParam = selectedConditions.join(',');
       const dataResponse = await axios.get(`http://localhost:8000/offers/?item_category=${categoriesParam}&price_min=${minPrice}&price_max=${maxPrice}&item_condition=${conditionsParam}&item_name=${itemName}`);
       const auctionsData = dataResponse.data;
+      console.log(auctionsData)
 
       setOffers(auctionsData);
       setItems(auctionsData);
