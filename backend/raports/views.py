@@ -52,18 +52,21 @@ class TransactionReport(APIView):
 
                 while current_date <= end_date:
                     next_day = current_date + timedelta(days=1)
-                    daily_transactions = Transaction.objects.filter(
-                        is_closed=True,
-                        closed_date__date=current_date,
-                        offer__price__gte=min_price,
-                        offer__price__lte=max_price,
-                        offer__item__category=category
-                    ).aggregate(
+                    filter_criteria = {
+                        'is_closed': True,
+                        'closed_date__date': current_date,
+                        'offer__price__gte': min_price,
+                        'offer__price__lte': max_price,
+                    }
+                    if category != 'all':
+                        filter_criteria['offer__item__category'] = category
+                    
+                    daily_transactions = Transaction.objects.filter(**filter_criteria).aggregate(
                         average_price=Avg('offer__price'),
                         total_price=Sum('offer__price'),
                         quantity=Count('offer__offer_id')
                     )
-                    
+
                     if daily_transactions['quantity'] > 0:
                         transaction_reports.append({
                             'date': current_date,
@@ -73,25 +76,28 @@ class TransactionReport(APIView):
                         })
                     current_date = next_day
 
+                filter_criteria = {
+                    'is_closed': True,
+                    'closed_date__date__gte': start_date,
+                    'closed_date__date__lte': end_date,
+                    'offer__price__gte': min_price,
+                    'offer__price__lte': max_price,
+                }
+                if category != 'all':
+                    filter_criteria['offer__item__category'] = category
 
-                total_transactions = Transaction.objects.filter(
-                    is_closed = True,
-                    closed_date__date__gte=start_date,
-                    closed_date__date__lte=end_date,
-                    offer__price__gte=min_price,
-                    offer__price__lte=max_price,
-                    offer__item__category = category
-
-                ).aggregate(
+                total_transactions = Transaction.objects.filter(**filter_criteria).aggregate(
                     average_price=Avg('offer__price'),
                     total_price=Sum('offer__price'),
                     quantity=Count('offer__offer_id')
                 )
+
                 return JsonResponse(
                     {
                         'transaction_reports': transaction_reports,
                         'total_transactions': total_transactions 
-                    }, json_dumps_params={'indent': 2})
+                    }, json_dumps_params={'indent': 2}
+                )
                
             else:
                 return JsonResponse({'error': 'Missing Date Fields'}, status=400)
