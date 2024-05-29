@@ -8,7 +8,7 @@ import { ThemeProvider } from '../src/ThemeContext';
 import UserDashboard from './pages/UserDashboard';
 import { AppStateProvider } from './lib/AppStateManager';
 import { AuthProvider } from './lib/AuthContext';
-import UserProfile from './pages/UserProfile';
+import UserProfile from '../src/pages/UserProfile';
 
 import PrivateRoute from './utils/PrivateRoute'
 import LoginSuccess from './pages/LoginSuccess';
@@ -33,6 +33,7 @@ function App() {
                             <Route path='/UserDashboard/:section' exact element={<UserDashboard />} />
                             <Route path='/auth_success' exact element={<LoginSuccess />} />
                             <Route path='/success' exact element={<PaymentSuccess />} />
+                            <Route path='/UserProfile/:steam_id' exact element={<UserProfile />} />
                         </Routes>
                         <Footer/>
                     </Router>
