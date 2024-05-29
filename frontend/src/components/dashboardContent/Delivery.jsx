@@ -9,33 +9,9 @@ const Delivery = ({ownerId}) => {
   const [waiting, setWaiting] = useState([])
   const [pending, setPending] = useState([])
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await axios.get(`http://localhost:8001/transactionBuyer`, {params: {
-        user: ownerId
-      }})
-      .then((data) => setWaiting(data.data.filter(item => item.isClosed === false)))
-      .catch((err) => console.log(err))
-
-      await axios.get(`http://localhost:8001/transactionSeller`, {params: {
-        user: ownerId
-      }})
-      .then((data) => setPending(data.data.filter(item => item.isClosed === false)))
-      .catch((err) => console.log(err))
-    }
-    
-    
-    fetchData()
-    console.log(waiting)
-  }, [])
 
   const handleClosing = (e) => {
-    console.log(e.target.value)
-    axios.post(`http://localhost:8001/tranactionClose`, {id: e.target.value, status: true})
-    .then((res) => {
-      setWaiting(prev => prev.filter(item => item._id !== e.target.value))
-    })
-    .catch((err) => console.log(err))
+    
   }
 
   return (
