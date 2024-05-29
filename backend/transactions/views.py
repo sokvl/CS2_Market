@@ -34,12 +34,12 @@ class UserTransactionsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        user_id = request.query_params.get('user_id', None)
-        if not user_id:
-            return Response({'error': 'user_id parameter is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        steam_id = request.query_params.get('steam_id', None)
+        if not steam_id:
+            return Response({'error': 'steam_id parameter is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            user = get_user_model().objects.get(pk=user_id)
+            user = get_user_model().objects.get(steam_id=steam_id)
         except get_user_model().DoesNotExist:
             return Response({'error': 'User does not exist.'}, status=status.HTTP_404_NOT_FOUND)
 
