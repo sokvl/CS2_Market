@@ -1,4 +1,5 @@
 from rest_framework import viewsets, status
+from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 import django_filters
@@ -28,6 +29,53 @@ class TransactionViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+
+class UserTransactionsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user_id = request.query_params.get('user_id', None)
+        if not user_id:
+            return Response({'error': 'user_id parameter is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = get_user_model().objects.get(pk=user_id)
+        except get_user_model().DoesNotExist:
+            return Response({'error': 'User does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+
+        to_send_transactions = Transaction.objects.filter(is_closed=False, offer__owner=user)
+        waiting_to_get_transactions = Transaction.objects.filter(is_closed=False, buyer=user)
+
+        to_send_serializer = TransactionSerializer(to_send_transactions, many=True)
+        waiting_to_get_serializer = TransactionSerializer(waiting_to_get_transactions, many=True)
+
+        to_send_data = []
+        waiting_to_get_data = []
+
+        for transaction in to_send_transactions:
+            to_send_data.append({
+                'transaction_id': transaction.transaction_id,
+                'buyer_username': transaction.buyer.username if transaction.buyer else None,
+                'buyer_tradelink': transaction.buyer.steam_tradelink if transaction.buyer else None,
+                'item_name': transaction.offer.item.item_name if transaction.offer.item else None,
+                'inspect_link': transaction.offer.item.inspect.split("steam:")[1] if transaction.offer.item and "steam:" in transaction.offer.item.inspect else None
+            })
+
+        for transaction in waiting_to_get_transactions:
+            waiting_to_get_data.append({
+                'transaction_id': transaction.transaction_id,
+                'owner_username': transaction.offer.owner.username if transaction.offer.owner else None,
+                'item_name': transaction.offer.item.item_name if transaction.offer.item else None,
+                'inspect_link': transaction.offer.item.inspect.split("steam:")[1] if transaction.offer.item and "steam:" in transaction.offer.item.inspect else None
+            })  
+
+        response_data = {
+            'to_send': to_send_data,
+            'waiting_to_get': waiting_to_get_data
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
+    
 
 class RatingViewSet(viewsets.ModelViewSet):
     queryset = Rating.objects.all()
