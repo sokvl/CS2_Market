@@ -39,6 +39,8 @@ const AdminPanel = ({steamid}) => {
         if(event.target.value === 'option1') {
           setRaport1(true);
           setRaport2(false);
+          setSelectedStars(0);
+          setSelectedStars2(0);
         } 
         if(event.target.value === 'option2') {
           setRaport2(true);
@@ -52,7 +54,14 @@ const AdminPanel = ({steamid}) => {
     };
 
     const handleMinPriceChange = (event) => {
-      setPriceMin(event.target.value);
+      const value = event.target.value;
+      
+      if (isNaN(value)) {
+        alert("Wprowadziłeś niedozwoloną wartość!");
+        event.target.value = ""; // opcjonalnie, aby wyczyścić pole
+      } else {
+        setPriceMin(value);
+      }
     };
   
     const handleMaxPriceChange = (event) => {
@@ -105,13 +114,19 @@ const AdminPanel = ({steamid}) => {
         alert('Podaj zakres cen');
         return;
       }
-      if(priceMin > priceMax || priceMin < 0 || priceMax < 0) {
+      if(priceMin > priceMax) {
         alert('Zakres cen jest niepoprawny');
         return;
       }
 
+
       if(startDate === '' || endDate === '') {
         alert('Podaj zakres dat');
+        return;
+      }
+
+      if (startDate > endDate) {
+        alert('Zakres dat jest niepoprawny');
         return;
       }
   
@@ -161,10 +176,21 @@ const AdminPanel = ({steamid}) => {
                 <p className="mt-8 text-2xl text-center">Raport 2</p><br/>
                 <form class="block w-96 items-center justify-center shadow-lg p-4 rounded-xl">
                     <div class="grid grid-cols-2 gap-4">
-                        <div class="relative z-0 w-full mb-5">
-                        <input onChange={handleMinPriceChange} type="number" name="dd" placeholder="price min:" class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-indigo-600 border-gray-200 font-sans" />
-                        <label for="dd" class="absolute duration-200 top-3 -z-1 origin-0 text-gray-500 text-base"></label>
-                        </div>
+                    <div class="relative z-0 w-full mb-5">
+                      <input
+                        onChange={handleMinPriceChange}
+                        onKeyDown={(e) => {
+                          if (e.key === 'e' || e.key === 'E' || e.key === '-' || e.key === '+') {
+                            e.preventDefault();
+                          }
+                        }}
+                        type="number"
+                        name="dd"
+                        placeholder="price min:"
+                        class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-indigo-600 border-gray-200 font-sans"
+                      />
+                      <label for="dd" class="absolute duration-200 top-3 -z-1 origin-0 text-gray-500 text-base"></label>
+                    </div>
                         <div class="relative z-0 w-full mb-5">
                         <input onChange={handleMaxPriceChange} type="number" name="mm" placeholder="price max:" class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-indigo-600 border-gray-200 font-sans" />
                         <label for="mm" class="absolute duration-200 top-3 -z-1 origin-0 text-gray-500 text-base"></label>

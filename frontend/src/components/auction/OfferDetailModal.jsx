@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import Success from '../success/Succes';
 import AuthContext from '../../lib/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Spinner from '../../components/loadingScene/Spinner';
 
 const OfferDetailModal = ({closerHandler, category, rarityColor, 
@@ -22,7 +22,7 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
         const [isLoading, setIsLoading] = useState(false)
 
     const { user } = useContext(AuthContext)
-
+    
     useEffect(() => {
         const fetchItemDetails = async () =>  {
             setIsLoading(true);
@@ -206,10 +206,26 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
                         <div className="mt-10 flex-col mt-4">
                             <h1 className="text-xl mb-4">Seller:</h1>
                             <div className="flex items-center  bg-gray-800 rounded-xl">
+                            {owner.steam_id === user.steam_id ?
+                             <>
+                                <Link to = {'/UserDashboard/Settings'}>
+                                    <img 
+                                        src={owner.avatar_url}
+                                        className="rounded-full"
+                                    />
+                                </Link>
+                             </>                            
+                            : 
+                            <>
+                            <Link to={`/UserProfile/${owner.steam_id}`}>
                                 <img 
                                     src={owner.avatar_url}
                                     className="rounded-full"
                                 />
+                            </Link>
+                            </>
+                            }
+            
                                 <div className="flex-col ml-4">
                                     <p className="mx-auto font-bold">{owner.username}</p>
                                 </div>

@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext  } from "react";
 import axios from "axios";
 import Auction from "../auction/Auction";
+import AuthContext from '../../lib/AuthContext';
 
 const UserOffers = ({creatorId}) => {
  
   const [offers, setOffers] = useState([])
 
+  const { user } = useContext(AuthContext)
+
   useEffect(() =>{
     const fetchOffers = async () => {
-        const userOffers = await axios.get(`http://localhost:8000/offers?owner__steam_id=${creatorId}`);
-        setOffers(userOffers.data.filter(item => item.is_active === true))
+        const userOffers = await axios.get(`http://localhost:8000/offers/${user.steam_id}/`);
+        console.log(userOffers.data)
+        setOffers(userOffers.data)
 
     }
     fetchOffers();
