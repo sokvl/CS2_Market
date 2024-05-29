@@ -198,7 +198,7 @@ const AdminPanel = ({steamid}) => {
                       <option className="text-black" value="smg">SMG</option>
                       <option className="text-black" value="shotguns">Shotguns</option>
                       <option className="text-black" value="machine_guns">Machine Guns</option>
-                      <option className="text-black" value="containers">Containers</option>
+                      <option className="text-black" value="container">Containers</option>
                       <option className="text-black" value="gloves">Gloves</option>
                       <option className="text-black" value="agents">Agents</option>
                       <option className="text-black" value="inne">Inne</option>
