@@ -39,6 +39,8 @@ const AdminPanel = ({steamid}) => {
         if(event.target.value === 'option1') {
           setRaport1(true);
           setRaport2(false);
+          setSelectedStars(0);
+          setSelectedStars2(0);
         } 
         if(event.target.value === 'option2') {
           setRaport2(true);
@@ -105,13 +107,19 @@ const AdminPanel = ({steamid}) => {
         alert('Podaj zakres cen');
         return;
       }
-      if(priceMin > priceMax || priceMin < 0 || priceMax < 0) {
+      if(priceMin > priceMax) {
         alert('Zakres cen jest niepoprawny');
         return;
       }
 
+
       if(startDate === '' || endDate === '') {
         alert('Podaj zakres dat');
+        return;
+      }
+
+      if (startDate > endDate) {
+        alert('Zakres dat jest niepoprawny');
         return;
       }
   
@@ -198,7 +206,7 @@ const AdminPanel = ({steamid}) => {
                       <option className="text-black" value="smg">SMG</option>
                       <option className="text-black" value="shotguns">Shotguns</option>
                       <option className="text-black" value="machine_guns">Machine Guns</option>
-                      <option className="text-black" value="containers">Containers</option>
+                      <option className="text-black" value="container">Containers</option>
                       <option className="text-black" value="gloves">Gloves</option>
                       <option className="text-black" value="agents">Agents</option>
                       <option className="text-black" value="inne">Inne</option>
