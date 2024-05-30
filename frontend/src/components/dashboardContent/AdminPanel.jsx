@@ -55,24 +55,13 @@ const AdminPanel = ({steamid}) => {
 
     const handleMinPriceChange = (event) => {
       const value = event.target.value;
-      
-      if (isNaN(value)) {
-        alert("Wprowadziłeś niedozwoloną wartość!");
-        event.target.value = ""; // opcjonalnie, aby wyczyścić pole
-      } else {
-        setPriceMin(value);
-      }
+      setPriceMin(value);
+    
     };
   
     const handleMaxPriceChange = (event) => {
-      const value = event.target.value;
-      
-      if (isNaN(value)) {
-        alert("Wprowadziłeś niedozwoloną wartość!");
-        event.target.value = ""; // opcjonalnie, aby wyczyścić pole
-      } else {
-        setPriceMin(value);
-      }
+      const value = event.target.value;   
+      setPriceMax(value);   
     };
 
     const handleStartDateChange = (event) => {
@@ -121,7 +110,7 @@ const AdminPanel = ({steamid}) => {
         return;
       }
       if(priceMin > priceMax) {
-        alert('Zakres cen jest niepoprawny');
+        alert('Zakres cen jest niepoprawny, cena minimalna musi być mniejsza od ceny maksymalnej');
         return;
       }
 
@@ -131,7 +120,7 @@ const AdminPanel = ({steamid}) => {
       }
 
       if (startDate > endDate) {
-        alert('Zakres dat jest niepoprawny');
+        alert('Zakres dat jest niepoprawny, data początkowa musi być mniejsza od daty końcowej');
         return;
       }
   
