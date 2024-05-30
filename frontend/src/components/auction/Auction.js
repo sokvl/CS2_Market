@@ -10,7 +10,7 @@ const Auction = ({ id, title, offerActiveId, image, price, seed, condition, inve
   const { user } = useContext(AuthContext)
   const location = useLocation();
 
-  const isOwner = user.steam_id === owner.steam_id;
+  const isOwner = user?.steam_id === owner?.steam_id;
   const isMarketPage = location.pathname === '/market';
 
   const [openModal, setopenModal] = useState(false);
