@@ -35,12 +35,7 @@ const Delivery = ({ownerId}) => {
   }, [])
 
   const handleClosing = (e) => {
-    console.log(e.target.value)
-    axios.post(`http://localhost:8001/tranactionClose`, {id: e.target.value, status: true})
-    .then((res) => {
-      setWaiting(prev => prev.filter(item => item._id !== e.target.value))
-    })
-    .catch((err) => console.log(err))
+    
   }
 
   return (

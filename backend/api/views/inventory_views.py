@@ -5,6 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 import os
 import requests
 from urllib.parse import quote
+from offers.models import Item, Offer
+from django.contrib.auth import get_user_model
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -15,7 +17,13 @@ def get_user_inventory(request, user_id):
             return Response({'Error': 'Provide user_id param'}, status=400)
 
         data = requests.get(f"https://www.steamwebapi.com/steam/api/inventory?key={SA_KEY}&steam_id={user_id}&sort=price_max&currency=USD")
-        print(data)
+        user = get_user_model().objects.get(id=user_id)
+        offers = Offer.objects.filter(owner=user)
+        print(offers)
+        offers = set(offers['item']['inspect_link'])
+        print(offers)
+        filtred_inventory = [item for item in data.json() if item['inspect_link'] not in offers]
+        print(filtred_inventory)
         return JsonResponse({'inventory': data.json()}, status=200)
     except Exception as e:
         return JsonResponse({'error': str(e), "req": request.data})

@@ -9,6 +9,7 @@ import UserDashboard from './pages/UserDashboard';
 import { AppStateProvider } from './lib/AppStateManager';
 import { AuthProvider } from './lib/AuthContext';
 import UserProfile from '../src/pages/UserProfile';
+import ErrorPage from './pages/ErrorPage';
 
 import PrivateRoute from './utils/PrivateRoute'
 import LoginSuccess from './pages/LoginSuccess';
@@ -34,6 +35,7 @@ function App() {
                             <Route path='/success' exact element={<PaymentSuccess />} />
                             <Route path='/UserDashboard/:section' exact element={<UserDashboard />} />
                             <Route path='/UserProfile/:steam_id' exact element={<UserProfile />} />
+                            <Route path='*' element={<ErrorPage />} />
                         </Routes>
                         <Footer/>
                     </Router>

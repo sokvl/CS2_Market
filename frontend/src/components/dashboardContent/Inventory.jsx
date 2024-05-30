@@ -20,7 +20,7 @@ const Inventory = () => {
     const fetchData = async () => {  
       setIsLoading(true);  
         try {
-          let data = await axios.get(`http://localhost:8000/inv/${user.steam_id}`, {headers: {
+          let data = await axios.get(`http://localhost:8000/inv/${user?.steam_id}`, {headers: {
             Authorization: `Bearer ${localStorage.getItem("access")}`
           }})
           
@@ -40,7 +40,7 @@ const Inventory = () => {
     <>
     {isLoading ? <Spinner /> :
       <div className='flex flex-wrap '>          
-        {items.length > 0 ? items?.map((auction, i) => (
+        {items?.length > 0 ? items?.map((auction, i) => (
           <div key={i}>
             <Auction 
               id={auction.classid} 
