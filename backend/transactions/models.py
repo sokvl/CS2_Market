@@ -21,7 +21,7 @@ class Transaction(models.Model):
         db_table = 'Transactions'
 
     def __str__(self):
-        return f'{self.offer},  B: {self.buyer}'
+        return f'{self.transaction_id}, {self.offer},  B: {self.buyer}'
         
 
 
