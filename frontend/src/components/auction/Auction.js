@@ -10,7 +10,7 @@ const Auction = ({ id, title, offerActiveId, image, price, seed, condition, inve
   const { user } = useContext(AuthContext)
   const location = useLocation();
 
-  const isOwner = user.steam_id === owner.steam_id;
+  const isOwner = user?.steam_id === owner?.steam_id;
   const isMarketPage = location.pathname === '/market';
 
   const [openModal, setopenModal] = useState(false);
@@ -21,7 +21,7 @@ const Auction = ({ id, title, offerActiveId, image, price, seed, condition, inve
   return(
     <>
 
-      {openModal && user.steam_id != null ? 
+      {openModal && user?.steam_id != null ? 
       <OfferDetailModal 
         closerHandler={modalStateHandler}
         imageLink={image}
@@ -41,8 +41,8 @@ const Auction = ({ id, title, offerActiveId, image, price, seed, condition, inve
         inventory={inventory}
       /> : <></>}
        <div
-      className={`flex flex-col bg-[#1f1d24] p-2 m-2 w-fit rounded-md shadow-xl transform transition duration-300 text-white hover:scale-110 hover:cursor-pointer ${
-        isOwner && isMarketPage ? 'border border-green-500 hover:shadow-lg hover:shadow-green-500/40' : 'hover:shadow-lg hover:shadow-white/20'}`} onClick={modalStateHandler}>
+      className={`flex flex-col bg-[#1f1d24] p-2 m-2 w-fit rounded-md shadow-xl transform transition duration-300 text-white hover:scale-105 hover:cursor-pointer ${
+        isOwner && isMarketPage ? 'border border-green-500 hover:shadow-lg hover:shadow-green-500/40' : 'hover:shadow-md hover:shadow-indigo-300/20'}`} onClick={modalStateHandler}>
         <div className="flex flex-row border-t-2 border-r-2 border-l-2 w-fit border-[#3b3847]">
           <img src={image}
             className={`border-b-4 w-[144px] h-[108px]`} 

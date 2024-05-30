@@ -25,15 +25,15 @@ function App() {
                 <ThemeProvider>
                     <Router>   
                         <Navbar />
-                        <PrivateRoute path='/UserDashboard/' exact element={<UserDashboard />} />
+                        <PrivateRoute path='/UserDashboard' exact element={<UserDashboard />} />
                         <PrivateRoute path='/UserProfile' exact element={<UserProfile />} />
                         <Routes>
                             <Route path="/" element={<Home />} />
                             <Route path='/market'  exact element = {<Market />}/>
                             <Route path='/contact' exact element={<Contact />} />
-                            <Route path='/UserDashboard/:section' exact element={<UserDashboard />} />
                             <Route path='/auth_success' exact element={<LoginSuccess />} />
                             <Route path='/success' exact element={<PaymentSuccess />} />
+                            <Route path='/UserDashboard/:section' exact element={<UserDashboard />} />
                             <Route path='/UserProfile/:steam_id' exact element={<UserProfile />} />
                             <Route path='*' element={<ErrorPage />} />
                         </Routes>
@@ -46,5 +46,6 @@ function App() {
     
 );
 }
+
 
 export default App;

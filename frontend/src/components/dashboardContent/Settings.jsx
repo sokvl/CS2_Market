@@ -11,6 +11,11 @@ const Settings = ({tl, steamid}) => {
     const [reloadState, setreloadState] = useState(false);
     let color = "#FFFFFF"
 
+        
+    if (!steamid) {
+        window.location.href = '/'
+    }
+
     const inputHandler = (e) => {
         setinputValue(e.target.value);
     }

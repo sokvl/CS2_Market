@@ -29,10 +29,12 @@ export const AuthProvider = ({children}) => {
             'refresh': temp != null ? temp : authTokens?.refresh
         })
         if (res.status == 200) {
+            let now = new Date()
             setAuthTokens(res.data)
             let token_string = res.data.access.toString()
             localStorage.setItem("access", res.data.access)
             localStorage.setItem("refresh", res.data.refresh)
+            localStorage.setItem("timeStamp", now.setMinutes(now.getMinutes() + 5))
             setUser(jwtDecode(token_string))
         } else {
             alert("Login unsuccesful.")
@@ -41,6 +43,7 @@ export const AuthProvider = ({children}) => {
     }
 
     const logoutUser = () => {
+        window.location.href = '/'
         setAuthTokens(null)
         setUser(null)
         setLogged(false)
@@ -58,9 +61,14 @@ export const AuthProvider = ({children}) => {
 
     useEffect(()=> {
 
-        if(authTokens == null && localStorage.getItem("access")) {
+        const accessToken = localStorage.getItem("access")
+
+        if (localStorage.getItem("timeStamp") < new Date() && accessToken)
+            logoutUser()
+
+        if(authTokens == null && accessToken) {            
             let tokens = { 
-                access: localStorage.getItem("access"),
+                access: accessToken,
                 refresh: localStorage.getItem("refresh")
             }
             setAuthTokens(tokens)

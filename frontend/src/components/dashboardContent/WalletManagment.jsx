@@ -9,6 +9,11 @@ const WalletManagment = ({walletOwner, balance}) => {
   const [inputValue, setinputValue] = useState('');
   const { isDarkMode } = useTheme();
 
+    console.log(walletOwner)
+
+  if (walletOwner == null) {
+    window.location.href = '/'
+  }
 
   const handleInputChange = (e) => {
     setinputValue(e.target.value);
@@ -17,7 +22,7 @@ const WalletManagment = ({walletOwner, balance}) => {
   const makePayment = async () => {
     try{
       //klucz publiczny do testów
-      const key = 'pk_test_51PAvWC1PDN4klyO5gI9rRb7hQLFi1nqNazo5L5K2pmbRu6SDCwCLe4bo9Udj5uPqSXrA6mNeMDEfP75sfPLHaX05006ffHvcb3'
+      const key = 'pk_test_51OcqX4B8zq9h3F6RI8C97GYmsgoa5I7U0oNv1IPzzZe5uZ7NYaYUN7NqXNmG5p1V0V18qKRnxZC2Oxu4tnXYPrEh00qthVlBxQ'
 
       //ładuje stripe
       const stripe = await loadStripe(key);
