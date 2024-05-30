@@ -41,6 +41,7 @@ export const AuthProvider = ({children}) => {
     }
 
     const logoutUser = () => {
+        window.location.href = '/'
         setAuthTokens(null)
         setUser(null)
         setLogged(false)

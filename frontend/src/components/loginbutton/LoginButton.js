@@ -5,7 +5,7 @@ import AuthContext from '../../lib/AuthContext';
 
 const LoginButton = () => {
   const { isDarkMode } = useTheme();
-  const { user, loginUser } = useContext(AuthContext)
+  const { user, loginUser, logoutUser } = useContext(AuthContext)
 
     const handleClick = () => {
         console.log(user)
@@ -23,14 +23,21 @@ const LoginButton = () => {
             </div> 
         </a>        
         :
-        <Link to="/UserDashboard/Settings">
-            <div className={`rounded-xl p-1 px-2 mx-4 flex items-center hover:cursor-pointer ${isDarkMode ? 'bg-[#2f2b3a] text-gray-200' : 'border-2 border-blue-500'}`}> 
-                <div className='flex items-center text-xl'>
-                    <img src={user.avatar} width={42} height={42} className='rounded-[100%]'></img>
-                    <span className='mx-4'>{user.nickname}</span>
-                </div> 
-            </div>  
-        </Link>}
+        <div  className='flex items-center'>
+            <Link to="/UserDashboard/Settings">
+                <div className={`rounded-xl p-1 px-2 mx-4 flex items-center hover:cursor-pointer ${isDarkMode ? 'bg-[#2f2b3a] text-gray-200' : 'border-2 border-blue-500'}`}> 
+                    <div className='flex items-center text-xl'>
+                        <img src={user.avatar} width={42} height={42} className='rounded-[100%]'></img>
+                        <span className='mx-4'>{user.nickname}</span>
+                    </div>
+                </div>  
+            </Link>
+            <div className='mt-1'>
+                <button onClick={logoutUser} className='transition hover:text-gray-400'>
+                    <i class="fa-solid fa-right-from-bracket text-[1.2rem]"></i>
+                </button>
+            </div>
+        </div>}
     </div>
   );
 }

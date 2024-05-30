@@ -15,7 +15,7 @@ const Auction = ({ id, title, offerActiveId, image, price, seed, condition, inve
   return(
     <>
 
-      {openModal && user.steam_id != null ? 
+      {openModal && user?.steam_id != null ? 
       <OfferDetailModal 
         closerHandler={modalStateHandler}
         imageLink={image}

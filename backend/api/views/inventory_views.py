@@ -7,7 +7,7 @@ import requests
 from urllib.parse import quote
 
 @api_view(['GET'])
-#@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def get_user_inventory(request, user_id):
     try:
         SA_KEY = os.getenv('STEAMAPI_KEY')

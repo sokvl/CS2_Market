@@ -9,6 +9,11 @@ const WalletManagment = ({walletOwner, balance}) => {
   const [inputValue, setinputValue] = useState('');
   const { isDarkMode } = useTheme();
 
+    console.log(walletOwner)
+
+  if (walletOwner == null) {
+    window.location.href = '/'
+  }
 
   const handleInputChange = (char) => {
     if (parseInt(char.target.value) >= 0)

@@ -9,6 +9,10 @@ const UserOffers = ({creatorId}) => {
 
   const { user } = useContext(AuthContext)
 
+  if (!user) {
+    window.location.href = '/'
+  }
+
   useEffect(() =>{
     const fetchOffers = async () => {
         const userOffers = await axios.get(`http://localhost:8000/offers/${user.steam_id}/`);

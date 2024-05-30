@@ -9,6 +9,11 @@ const Delivery = ({ownerId}) => {
   const [waiting, setWaiting] = useState([])
   const [pending, setPending] = useState([])
 
+  
+  if (!ownerId) {
+    window.location.href = '/'
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       await axios.get(`http://localhost:8001/transactionBuyer`, {params: {
