@@ -140,7 +140,6 @@ const handleNewPriceChange = (e) => {
           console.error('Error fetching data:', error);
         } 
         closerHandler(prev => !prev);
-        window.location.reload();
         navigate("/UserDashboard/ActiveOffers")
 
     }
@@ -155,7 +154,6 @@ const handleNewPriceChange = (e) => {
             console.error('Error fetching data:', error);
         }
         closerHandler(prev => !prev);
-        window.location.reload();
         navigate("/UserDashboard/ActiveOffers")
     }
 
@@ -185,6 +183,7 @@ const handleNewPriceChange = (e) => {
                                 height={200}
                                 className="px-4 transform transition duration-300 text-white hover:scale-[120%]"    
                             />
+                            
                             <button className="p-1 text-sm border-b-2 border-transparent transition duration-100 ease-in hover:border-gray-400">
                                 <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
                                 <a href={`${inspectLink}`}>

@@ -39,7 +39,9 @@ const Inventory = () => {
   return (
     <>
     {isLoading ? <Spinner /> :
-      <div className='flex flex-wrap '>          
+    
+      <div className='flex flex-wrap '>
+               
         {items?.length > 0 ? items?.map((auction, i) => (
           <div key={i}>
             <Auction 
