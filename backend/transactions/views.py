@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 import django_filters
 from rest_framework.response import Response
+from rest_framework.decorators import action
 
 from .models import Transaction, Rating, Notification
 from .serializers import TransactionSerializer, RatingSerializer, NotificationSerializer
@@ -28,6 +29,13 @@ class TransactionViewSet(viewsets.ModelViewSet):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    def close_offer(self, request, pk=None):
+        transaction = self.get_object()
+        transaction.is_closed = True
+        transaction.save()
+        return Response({'status': 'offer closed'}, status=status.HTTP_200_OK)
 
 
 class UserTransactionsView(APIView):
