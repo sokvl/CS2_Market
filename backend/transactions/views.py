@@ -58,7 +58,8 @@ class UserTransactionsView(APIView):
                 'buyer_username': transaction.buyer.username if transaction.buyer else None,
                 'buyer_tradelink': transaction.buyer.steam_tradelink if transaction.buyer else None,
                 'item_name': transaction.offer.item.item_name if transaction.offer.item else None,
-                'inspect_link': transaction.offer.item.inspect.split("steam:")[1] if transaction.offer.item and "steam:" in transaction.offer.item.inspect else None
+                'inspect_link': transaction.offer.item.inspect.split("steam:")[1] if transaction.offer.item and "steam:" in transaction.offer.item.inspect else None,
+                'item_image': transaction.offer.item.img_link if transaction.offer.item else None
             })
 
         for transaction in waiting_to_get_transactions:
@@ -66,7 +67,8 @@ class UserTransactionsView(APIView):
                 'transaction_id': transaction.transaction_id,
                 'owner_username': transaction.offer.owner.username if transaction.offer.owner else None,
                 'item_name': transaction.offer.item.item_name if transaction.offer.item else None,
-                'inspect_link': transaction.offer.item.inspect.split("steam:")[1] if transaction.offer.item and "steam:" in transaction.offer.item.inspect else None
+                'inspect_link': transaction.offer.item.inspect.split("steam:")[1] if transaction.offer.item and "steam:" in transaction.offer.item.inspect else None,
+                'item_image': transaction.offer.item.img_link if transaction.offer.item else None
             })  
 
         response_data = {
