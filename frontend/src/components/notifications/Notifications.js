@@ -57,9 +57,12 @@ const Notifications = () => {
           </div>
           <div className={`absolute overflow-scroll z-[999] max-w-[18rem] max-h-[20rem] min-h-[20rem] bg-zinc-800 top-24 rounded-xl p-2 shadow-2xl ${hidden ? 'hidden' : ''} transition all`}>
             <h1 className='text-center text-xl border-b p-2'>Notifications</h1>
-            {notifications.length === 0 ? (
-              <p className='p-4'>Brak nowych powiadomień</p>
-            ) : (
+            {notifications.length === 0 ? 
+            (
+              <p className='p-4'>You have 0 notifications</p>
+            ) 
+            : 
+            (         
               notifications.map((item) => (
                 <div key={item.notification_id} className="p-2 border-dashed border-b my-2 overflow-auto text-sm">
                   <p
