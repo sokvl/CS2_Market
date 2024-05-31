@@ -3,7 +3,7 @@ import '../styles/contact.css';
 import axios from 'axios';
 import { useTheme } from '../ThemeContext';
 import { useAppState } from '../lib/AppStateManager';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Inventory from '../components/dashboardContent/Inventory';
 import WalletManagment from '../components/dashboardContent/WalletManagment';
 import Settings from '../components/dashboardContent/Settings';
@@ -11,20 +11,26 @@ import UserOffers from '../components/dashboardContent/Offers';
 import Delivery from '../components/dashboardContent/Delivery';
 import AuthContext from '../lib/AuthContext';
 import AdminPanel from '../components/dashboardContent/AdminPanel';
+import PrivateRoute from '../utils/PrivateRoute';
 
 const UserDashboard = () => {
   const location = useLocation();
+  const navigate = useNavigate()
   const { isDarkMode } = useTheme();
 
   const { user } = useContext(AuthContext)
 
   const [isAdmin, setIsAdmin] = useState(true);
 
+  if (!user) {
+    navigate('/')
+  }
+
   const [walletBalance, setWalletBalance] = useState({});
   const [tradeLink, setTradelink] = useState("Please provide tradelink!");
   useEffect(() => {
     const getUserBalance = async () => {
-      await axios.get(`http://localhost:8000/users/wallet/${user.steam_id}/`)
+      await axios.get(`http://localhost:8000/users/wallet/${user?.steam_id}/`)
       .then(res => setWalletBalance(res.data))
       .catch(err => console.log(err))
 
@@ -33,12 +39,12 @@ const UserDashboard = () => {
        * Have to customize responses, because two requests is too much..
        */
 
-      await axios.get(`http://localhost:8000/users/${user.steam_id}`)
+      await axios.get(`http://localhost:8000/users/${user?.steam_id}`)
       .then(res => setTradelink(res.data.steam_tradelink))
       .catch(err => console.log(err))
     }
     getUserBalance()
-  }, [user.steam_id]);
+  }, [user?.steam_id]);
 
   const getLinkClassName = (pathname) => {
     return `flex items-center py-1 rounded-md ${location.pathname === pathname ? 'border-b border-white' : ''}`;
@@ -50,8 +56,8 @@ const UserDashboard = () => {
         <div className='flex flex-col md:flex-row md:space-x-6 space-y-6 md:space-y-0 mt-24'>
           <div className={`${isDarkMode ? 'bg-[#242633]' : 'bg-gradient-to-r from-blue-800 to-blue-900 text-white'} md:w-1/4 p-4 rounded-xl`}>
             <div className="flex flex-col text-sm items-center justify-center">
-              <img src={user.avatar} className="rounded-full border bg-black" width={96} height={96} alt="User Avatar" />
-              <h1 className="text-2xl mt-2">{user.username}</h1>
+              <img src={user?.avatar} className="rounded-full border bg-black" width={96} height={96} alt="User Avatar" />
+              <h1 className="text-2xl mt-2">{user?.username}</h1>
             </div>
             <div className='text-md mt-4'>
               <p className="text-sm text-zinc-400 mb-2">Menu</p>
@@ -97,12 +103,12 @@ const UserDashboard = () => {
             </div>
           </div>
           <div className='md:w-3/4'>
-            {location.pathname === '/UserDashboard/Settings' ? <Settings tl={tradeLink} steamid={user.steam_id}/> : <></>}           
+            {location.pathname === '/UserDashboard/Settings' ? <Settings tl={tradeLink} steamid={user?.steam_id}/> : <></>}           
             {location.pathname === '/UserDashboard/Inventory' ? <Inventory /> : <></>}
-            {location.pathname === '/UserDashboard/Wallet' ? <WalletManagment walletOwner={user.steam_id} balance={walletBalance.balance}/> : <></>}
-            {location.pathname === '/UserDashboard/ActiveOffers' ? <UserOffers creatorId={user.steam_id}></UserOffers> : <></>}
-            {location.pathname === '/UserDashboard/Delivery' ? <Delivery ownerId={user.steam_id}/> : <></>}
-            {location.pathname === '/UserDashboard/AdminPanel' ? <AdminPanel steamid={user.steam_id}/> : <></>}
+            {location.pathname === '/UserDashboard/Wallet' ? <WalletManagment walletOwner={user?.steam_id} balance={walletBalance.balance}/> : <></>}
+            {location.pathname === '/UserDashboard/ActiveOffers' ? <UserOffers creatorId={user?.steam_id}></UserOffers> : <></>}
+            {location.pathname === '/UserDashboard/Delivery' ? <Delivery ownerId={user?.steam_id}/> : <></>}
+            {location.pathname === '/UserDashboard/AdminPanel' ? <AdminPanel steamid={user?.steam_id}/> : <></>}
 
           </div>
         </div>

@@ -5,9 +5,11 @@ from rest_framework.permissions import IsAuthenticated
 import os
 import requests
 from urllib.parse import quote
+from offers.models import Item, Offer
+from django.contrib.auth import get_user_model
 
 @api_view(['GET'])
-#@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def get_user_inventory(request, user_id):
     try:
         SA_KEY = os.getenv('STEAMAPI_KEY')
@@ -15,7 +17,6 @@ def get_user_inventory(request, user_id):
             return Response({'Error': 'Provide user_id param'}, status=400)
 
         data = requests.get(f"https://www.steamwebapi.com/steam/api/inventory?key={SA_KEY}&steam_id={user_id}&sort=price_max&currency=USD")
-        print(data)
         return JsonResponse({'inventory': data.json()}, status=200)
     except Exception as e:
         return JsonResponse({'error': str(e), "req": request.data})

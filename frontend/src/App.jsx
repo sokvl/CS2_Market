@@ -8,7 +8,8 @@ import { ThemeProvider } from '../src/ThemeContext';
 import UserDashboard from './pages/UserDashboard';
 import { AppStateProvider } from './lib/AppStateManager';
 import { AuthProvider } from './lib/AuthContext';
-import UserProfile from './pages/UserProfile';
+import UserProfile from '../src/pages/UserProfile';
+import ErrorPage from './pages/ErrorPage';
 
 import PrivateRoute from './utils/PrivateRoute'
 import LoginSuccess from './pages/LoginSuccess';
@@ -24,15 +25,17 @@ function App() {
                 <ThemeProvider>
                     <Router>   
                         <Navbar />
-                        <PrivateRoute path='/UserDashboard/' exact element={<UserDashboard />} />
+                        <PrivateRoute path='/UserDashboard' exact element={<UserDashboard />} />
                         <PrivateRoute path='/UserProfile' exact element={<UserProfile />} />
                         <Routes>
                             <Route path="/" element={<Home />} />
                             <Route path='/market'  exact element = {<Market />}/>
                             <Route path='/contact' exact element={<Contact />} />
-                            <Route path='/UserDashboard/:section' exact element={<UserDashboard />} />
                             <Route path='/auth_success' exact element={<LoginSuccess />} />
                             <Route path='/success' exact element={<PaymentSuccess />} />
+                            <Route path='/UserDashboard/:section' exact element={<UserDashboard />} />
+                            <Route path='/UserProfile/:steam_id' exact element={<UserProfile />} />
+                            <Route path='*' element={<ErrorPage />} />
                         </Routes>
                         <Footer/>
                     </Router>
@@ -43,5 +46,6 @@ function App() {
     
 );
 }
+
 
 export default App;

@@ -9,16 +9,20 @@ const WalletManagment = ({walletOwner, balance}) => {
   const [inputValue, setinputValue] = useState('');
   const { isDarkMode } = useTheme();
 
+    console.log(walletOwner)
 
-  const handleInputChange = (char) => {
-    if (parseInt(char.target.value) >= 0)
-      setinputValue(char.target.value);
+  if (walletOwner == null) {
+    window.location.href = '/'
+  }
+
+  const handleInputChange = (e) => {
+    setinputValue(e.target.value);
   };
 
   const makePayment = async () => {
     try{
       //klucz publiczny do testów
-      const key = 'pk_test_51PAvWC1PDN4klyO5gI9rRb7hQLFi1nqNazo5L5K2pmbRu6SDCwCLe4bo9Udj5uPqSXrA6mNeMDEfP75sfPLHaX05006ffHvcb3'
+      const key = 'pk_test_51OcqX4B8zq9h3F6RI8C97GYmsgoa5I7U0oNv1IPzzZe5uZ7NYaYUN7NqXNmG5p1V0V18qKRnxZC2Oxu4tnXYPrEh00qthVlBxQ'
 
       //ładuje stripe
       const stripe = await loadStripe(key);
@@ -33,21 +37,18 @@ const WalletManagment = ({walletOwner, balance}) => {
         sessionId: sessionId,
        });
       
-      if (error) {
-        // Obsługa błędu płatności
-        console.error('Payment failed:', error);
-        // Przekierowanie na endpoint /fail
+      if (error) {    
+        console.error('Payment failed:', error);       
         window.location.href = 'http://localhost:8000/payment';
       } else {
-        // Płatność zakończona sukcesem
-        // Przekierowanie na endpoint /success
+       
         window.location.href = 'http://localhost:8000/payment';
       }
 
       
     }catch (err) {
       console.error('Payment failed:', err);
-      //window.location.href = '/fail';
+      
     }
   }
 
@@ -69,6 +70,11 @@ const WalletManagment = ({walletOwner, balance}) => {
             className={`${isDarkMode ? 'bg-[#292730]' : 'bg-white'} rounded-xl shadow-black shadow-inner border-none w-full md:w-2/3`}
             value={inputValue}
             onChange={handleInputChange}
+            onKeyDown={(e) => {
+              if (e.key === 'e' || e.key === 'E' || e.key === '-' || e.key === '+') {
+                e.preventDefault();
+              }
+            }}
           ></input>
           <button className='px-2 ml-4 border border-white rounded-lg text-sm min-w-fit flex justify-center items-center' onClick={makePayment}>
             <i className='fa-solid fa-sack-dollar text-xs'></i>&nbsp;<p>Top up</p>
@@ -77,7 +83,7 @@ const WalletManagment = ({walletOwner, balance}) => {
         <div className='flex flex-col'>
           <p>Payment methods:</p>
           <div className='flex'>
-            <button className='mt-4 py-2 px-4 border border-white border-[#1b1920] rounded-xl shadow-md'>
+            <button className='mt-4 py-2 px-4 border border-green-500 border-[#1b1920] rounded-xl shadow-md'>
               <i className='fa-brands fa-stripe text-[1.5rem] md:text-[3rem]'></i>
             </button>
           </div>

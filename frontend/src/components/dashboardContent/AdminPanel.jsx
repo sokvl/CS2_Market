@@ -39,6 +39,8 @@ const AdminPanel = ({steamid}) => {
         if(event.target.value === 'option1') {
           setRaport1(true);
           setRaport2(false);
+          setSelectedStars(0);
+          setSelectedStars2(0);
         } 
         if(event.target.value === 'option2') {
           setRaport2(true);
@@ -52,11 +54,14 @@ const AdminPanel = ({steamid}) => {
     };
 
     const handleMinPriceChange = (event) => {
-      setPriceMin(event.target.value);
+      const value = event.target.value;
+      setPriceMin(value);
+    
     };
   
     const handleMaxPriceChange = (event) => {
-      setPriceMax(event.target.value);
+      const value = event.target.value;   
+      setPriceMax(value);   
     };
 
     const handleStartDateChange = (event) => {
@@ -96,7 +101,6 @@ const AdminPanel = ({steamid}) => {
        .catch((error) => {
          console.error('Error fetching data:', error);
        });
-
     }
 
     const handleRaport2Generate = () => {
@@ -105,13 +109,18 @@ const AdminPanel = ({steamid}) => {
         alert('Podaj zakres cen');
         return;
       }
-      if(priceMin > priceMax || priceMin < 0 || priceMax < 0) {
-        alert('Zakres cen jest niepoprawny');
+      if(priceMin > priceMax) {
+        alert('Zakres cen jest niepoprawny, cena minimalna musi być mniejsza od ceny maksymalnej');
         return;
       }
 
       if(startDate === '' || endDate === '') {
         alert('Podaj zakres dat');
+        return;
+      }
+
+      if (startDate > endDate) {
+        alert('Zakres dat jest niepoprawny, data początkowa musi być mniejsza od daty końcowej');
         return;
       }
   
@@ -161,12 +170,27 @@ const AdminPanel = ({steamid}) => {
                 <p className="mt-8 text-2xl text-center">Raport 2</p><br/>
                 <form class="block w-96 items-center justify-center shadow-lg p-4 rounded-xl">
                     <div class="grid grid-cols-2 gap-4">
+                    <div class="relative z-0 w-full mb-5">
+                      <input
+                        onChange={handleMinPriceChange}
+                        onKeyDown={(e) => {
+                          if (e.key === 'e' || e.key === 'E' || e.key === '-' || e.key === '+') {
+                            e.preventDefault();
+                          }
+                        }}
+                        type="number"
+                        name="dd"
+                        placeholder="price min:"
+                        class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-indigo-600 border-gray-200 font-sans"
+                      />
+                      <label for="dd" class="absolute duration-200 top-3 -z-1 origin-0 text-gray-500 text-base"></label>
+                    </div>
                         <div class="relative z-0 w-full mb-5">
-                        <input onChange={handleMinPriceChange} type="number" name="dd" placeholder="price min:" class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-indigo-600 border-gray-200 font-sans" />
-                        <label for="dd" class="absolute duration-200 top-3 -z-1 origin-0 text-gray-500 text-base"></label>
-                        </div>
-                        <div class="relative z-0 w-full mb-5">
-                        <input onChange={handleMaxPriceChange} type="number" name="mm" placeholder="price max:" class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-indigo-600 border-gray-200 font-sans" />
+                        <input onKeyDown={(e) => {
+                          if (e.key === 'e' || e.key === 'E' || e.key === '-' || e.key === '+') {
+                            e.preventDefault();
+                          }
+                        }} onChange={handleMaxPriceChange} type="number" name="mm" placeholder="price max:" class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-indigo-600 border-gray-200 font-sans" />
                         <label for="mm" class="absolute duration-200 top-3 -z-1 origin-0 text-gray-500 text-base"></label>
                         </div>
                     </div>
@@ -198,7 +222,7 @@ const AdminPanel = ({steamid}) => {
                       <option className="text-black" value="smg">SMG</option>
                       <option className="text-black" value="shotguns">Shotguns</option>
                       <option className="text-black" value="machine_guns">Machine Guns</option>
-                      <option className="text-black" value="containers">Containers</option>
+                      <option className="text-black" value="container">Containers</option>
                       <option className="text-black" value="gloves">Gloves</option>
                       <option className="text-black" value="agents">Agents</option>
                       <option className="text-black" value="inne">Inne</option>
