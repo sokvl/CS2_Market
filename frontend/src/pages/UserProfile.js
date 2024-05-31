@@ -5,6 +5,7 @@ import { useTheme } from '../ThemeContext';
 import AuthContext from '../lib/AuthContext';
 import { Link, useLocation, useParams  } from 'react-router-dom';
 import Spinner from '../components/loadingScene/Spinner';
+import Auction from '../components/auction/Auction'
 
 const UserProfile = () => {
 
@@ -13,7 +14,9 @@ const UserProfile = () => {
     const { isDarkMode } = useTheme();
 
     const [profileData, setProfileData] = useState({});
-    const [auctionsData, setAuctionsData] = useState([]);
+    const [ratingData, setRatingData] = useState([])
+    const [offersData, setOffersData] = useState([])
+    
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
@@ -21,9 +24,12 @@ const UserProfile = () => {
         try {
           setIsLoading(true);
           const profileDataRequest = await axios.get(`http://localhost:8000/users/${steam_id}`);
-          const auctionsData = await axios.get(`http://localhost:8000/offers/`);
-          //const ratingDataRequest = await axios.get(`http://localhost:8000/rating/5`);
+          const ratingData = await axios.get(`http://localhost:8000/users/rating?steam_id=${steam_id}`)
+          const offersData = await axios.get(`http://localhost:8000/offers/user-active?steam_id=${steam_id}`)
           setProfileData(profileDataRequest.data);
+          setRatingData(ratingData.data)
+          setOffersData(offersData.data)
+          console.log(offersData.data)
 
         } catch (error) {
           console.error('Error fetching data:', error);
@@ -40,13 +46,35 @@ const UserProfile = () => {
               <div className='flex items-center justify-center flex-col md:flex-row md:space-x-6 space-y-6 md:space-y-0 mt-8'>
                 <div className={`${isDarkMode ? 'bg-[#242633]' : 'bg-gradient-to-r from-blue-800 to-blue-900 text-white'} w-4/5 p-16 rounded-xl`}>
                   {isLoading ? <Spinner /> :
+                  <>
                   <div className="flex items-center justify-center text-sm ">
-                    <p className='text-3xl text-zinc-200'> OCENA </p>
+                    <p className='text-3xl mr-2 text-zinc-200'> {ratingData.average_rating} </p> <i className="fa-solid fa-star "></i>
                     <img src={profileData.avatar_url} className="mx-8 rounded-full border bg-black" width={200} height={200} alt="User Avatar" />
-                      <p className="text-3xl text-zinc-200">{profileData.username}</p>
+                      <p className="text-3xl text-zinc-200">{profileData.username}</p>                
                   </div>
-                  }
-                </div>
+                  <p className='text-2xl mt-8 text-zinc-200'>User's offers</p>
+                  <div className='flex flex-wrap '>      
+                      {offersData.map((auction, i) => (
+                        <div key={i} className='min-w-fit'>
+                          <Auction 
+                            id={auction.item.item_id} 
+                            title={auction.item.item_name} 
+                            image={auction.item.img_link} 
+                            price={auction.price}  
+                            owner={auction.owner} 
+                            inspectLink={auction.item.inspect == null ? "none" : auction.item.inspect}
+                            stickerElement={auction.item.stickerstring}
+                            isOwnOffer={false}
+                            rarityColor={auction.item.rarity}
+                            offerActiveId={auction.offer_id}
+                            condition={auction.item.condition}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                  }                 
+                </div>         
               </div>
             </div>
           </div>

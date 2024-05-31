@@ -12,6 +12,7 @@ const Auction = ({ id, title, offerActiveId, image, price, seed, condition, inve
 
   const isOwner = user?.steam_id === owner?.steam_id;
   const isMarketPage = location.pathname === '/market';
+  const isInventory = location.pathname === '/UserDashboard/Inventory';
 
   const [openModal, setopenModal] = useState(false);
   const modalStateHandler = () => {
