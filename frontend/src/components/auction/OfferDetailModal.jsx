@@ -9,10 +9,12 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
     imageLink, inspectLink, name, isOwner,
     steam_price, price , id, stickerString, inventory, owner, offerAciveId, condition,tradeable}) => 
     {
+    
         const { user } = useContext(AuthContext)
 
         const location = useLocation()
         const isMarketPage = location.pathname === '/market';
+        const isActiveOffers = location.pathname === '/UserDashboard/ActiveOffers';
         const isOwn = owner.steam_id === user.steam_id;
         const shouldHideButton = isOwn && (isMarketPage || offerAciveId === user.steam_id);
 
@@ -22,6 +24,7 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
         const [stickerInfo, setStickerInfo] = useState([])
         const [stickerLabels, setStickerLabels] = useState([])
         const [inputValue, setinputValue] = useState("")
+        const [newPrice, setNewPrice] = useState("")
 
         const [sellerData, setSellerData] = useState([]);
         const [buySuccess, setbuySuccess] = useState(false);
@@ -75,6 +78,13 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
         setinputValue(value); // Aktualizacja stanu, jeśli wartość jest poprawna
 }
 
+const handleNewPriceChange = (e) => {
+    const value = parseFloat(e.target.value, 10); // Przekształcenie wartości wejściowej na liczbę
+    if(value > 0) {
+        setNewPrice(value);
+    }
+}
+
  const createOffer = async () => {
     console.log(user.steam_id)
     await axios.post("http://localhost:8000/offers/", {
@@ -101,25 +111,6 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
         navigate("/market")
     }).catch((err) => console.log("error:", err))
 
-
-    console.log({    
-        item_id: id,
-        item_name: name,
-        img_link: imageLink,
-        condition: condition,
-        stickerstring: stickerString,
-        inspect: inspectLink,
-        rarity: rarityColor,
-        category: category,
-        listed: true,
-        tradeable: tradeable,
-        item: {
-            owner: 5,
-            item: 5, 
-            quantity: 1,
-            price: inputValue
-        }
-    })
   }
   
 
@@ -138,14 +129,46 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
     }).catch(err => console.log(err))
   }
 
+    const editPrice = () => {
+        try {
+            axios.patch(`http://localhost:8000/offers/${offerAciveId}/`,{price: newPrice}, {
+            headers: {
+            Authorization: `Bearer ${localStorage.getItem("access")}`
+          }})
+      
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } 
+        closerHandler(prev => !prev);
+        window.location.reload();
+        navigate("/UserDashboard/ActiveOffers")
+
+    }
+
+    const deleteOffer = () => {
+        try {
+            axios.delete(`http://localhost:8000/offers/${offerAciveId}/`, {
+            headers: {
+            Authorization: `Bearer ${localStorage.getItem("access")}`
+            }})
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+        closerHandler(prev => !prev);
+        window.location.reload();
+        navigate("/UserDashboard/ActiveOffers")
+    }
+
   return (
 
     <>
     
         <div className='flex w-full h-full fixed inset-0 backdrop-blur-sm z-[120] bg-black bg-opacity-50 justify-center items-center'>
             <div className='flex flex-col bg-[#242633] text-white p-12 pt-4 rounded-md justify-center overflow-auto shadow-xl'>
-            { buySuccess ? <Success/> : <> 
-                <div className='flex justify-end sticky'>
+            { buySuccess ? <Success/> 
+            : 
+            <> 
+                <div className='flex fixed justify-end sticky'>
                     <button className='mb-4' onClick={closerHandler}>
                         X
                     </button>
@@ -203,42 +226,62 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
                                 </ul>
                             </div>
                         </div>
-                        { isOwner ? 
+                        {isActiveOffers ? 
+                        <>
+                                <div className="flex flex-col text-sm  mt-8 font-thin">
+                                    <input
+                                            type="number"
+                                            placeholder="New price"
+                                            class="bg-[#242633] border-0 border-b-2 border-white text-white focus:outline-none focus:border-green-300 block mb-4 focus:ring-0"
+                                            onChange={handleNewPriceChange}
+                                        /> 
+                                    <button onClick={editPrice} className="bg-yellow-300 rounded-l p-2 px-16 mb-4 transition hover:bg-yellow-500" 
+                                        
+                                    >
+                                        Edit
+                                    </button>
+                                    <button onClick={deleteOffer} className="bg-red-500 rounded-l p-2 px-16 mb-8 transition hover:bg-red-700">Delete auction</button>
+                            </div>
+                            
+                        </> 
+                        : 
+                        <>
+                            { isOwner ? 
                             <>
 
                             </>
-                        :
-                        <div className="mt-10 flex-col mt-4">
-                            <h1 className="text-xl mb-4">Seller:</h1>
-                            <div className="flex items-center  bg-gray-800 rounded-xl">
-                            {owner.steam_id === user.steam_id ?
-                             <>
-                                <Link to = {'/UserDashboard/Settings'}>
-                                <img 
-                                    src={owner.avatar_url}
-                                    className="rounded-full"
-                                />
+                            :
+                            <div className="mt-10 flex-col mt-4">
+                                <h1 className="text-xl mb-4">Seller:</h1>
+                                <div className="flex items-center  bg-gray-800 rounded-xl">
+                                {owner.steam_id === user.steam_id ?
+                                <>
+                                    <Link to = {'/UserDashboard/Settings'}>
+                                    <img 
+                                        src={owner.avatar_url}
+                                        className="rounded-full"
+                                    />
+                                    </Link>
+                                </>                            
+                                : 
+                                <>
+                                <Link to={`/UserProfile/${owner.steam_id}`}>
+                                    <img 
+                                        src={owner.avatar_url}
+                                        className="rounded-full"
+                                    />
                                 </Link>
-                             </>                            
-                            : 
-                            <>
-                            <Link to={`/UserProfile/${owner.steam_id}`}>
-                                <img 
-                                    src={owner.avatar_url}
-                                    className="rounded-full"
-                                />
-                            </Link>
-                            </>
-                            }
-            
-                                <div className="flex-col ml-4">
-                                    <p className="mx-auto font-bold">{owner.username}</p>
+                                </>
+                                }
+                
+                                    <div className="flex-col ml-4">
+                                        <p className="mx-auto font-bold">{owner.username}</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        }
-                        <div className="flex flex-col text-sm  mt-8 font-thin">
-                        {isOwner ?  <input
+                            }
+                            <div className="flex flex-col text-sm  mt-8 font-thin">
+                                {isOwner ?  <input
                                         type="number"
                                         placeholder="Price"
                                         class="bg-[#242633] border-0 border-b-2 border-white text-white focus:outline-none focus:border-green-300 block mb-4 focus:ring-0"
@@ -261,8 +304,10 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
                                         </>
                                     )}
                                 </button>
-                        </div>
-                    
+                            </div>
+                        </>
+                        }
+                                               
                     </div>
                 </div>
                     
