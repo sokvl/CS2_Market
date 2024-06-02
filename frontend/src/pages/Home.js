@@ -2,29 +2,35 @@ import React, { useContext, useEffect, useState } from 'react';
 import '../styles/home.css';
 import { useTheme } from '../ThemeContext';
 import banner from '../assets/pngs/banner.jpg';
-import { useAppState } from '../lib/AppStateManager';
 import '../styles/carousel.css';
-import {Link} from 'react-router-dom'
 import axios from 'axios';
 import AuthContext from '../lib/AuthContext';
-import Cookies from "js-cookie";
+
 const Home = () => {
 
+    const [offers, setOffers] = useState([]);
     const [selectedCard, setSelectedCard] = useState(1);
-    const { isDarkMode } = useTheme();
-    const { state, dispatch } = useAppState();
 
-    const { loginUser } = useContext(AuthContext)
+    const { isDarkMode } = useTheme();
+
     const { user } = useContext(AuthContext)
 
-    const handleCardChange = (cardNumber) => {
-        setSelectedCard(cardNumber);
-      };
+    const handleCardChange = (cardIndex) => {
+        setSelectedCard(cardIndex);
+    };
 
     useEffect(() => {
-        console.log(Cookies.get())
-        console.log(user)
-      // loginUser()
+        const fetchOffers = async () => {
+            try {
+                const response = await axios.get("http://localhost:8000/offers/");
+                const shuffledOffers = response.data.sort(() => 0.5 - Math.random());
+                setOffers(shuffledOffers.slice(0, 4));
+            } catch (error) {
+                console.log("Error fetching offers:", error);
+            }
+        };
+
+        fetchOffers();
     }, []);
 
            
@@ -57,59 +63,61 @@ const Home = () => {
         
         
     </div>
-    <div className={`carousel ${isDarkMode ? 'bg-gradient-to-r from-[#121212] via-[#04101A] to-[#1a1625]':'d'}`}> 
-        <h1 className="text-xl"> Latest offers</h1>
-        <div class="wrapper">
-        <div class="container">
-            <input type="radio" className="xD" name="slide" id="c1" checked={selectedCard === 1} onChange={() => handleCardChange(1)}/>
-            <label for="c1" class="card">
-                <div class="row">
-                    <div class="icon">1</div>
-                    <div class="description">
-                        <h4>Winter</h4>
-                        <p>Winter has so much to offer -
-                         creative activities</p>
-                    </div>
-                </div>
-            </label>
-            <input type="radio" name="slide" className="xD" id="c2" checked={selectedCard === 2} onChange={() => handleCardChange(2)} />
-            <label for="c2" class="card">
-                <div class="row">
-                    <div class="icon">2</div>
-                    <div class="description">
-                        <h4>Digital Technology</h4>
-                        <p>Gets better every day -
-                         stay tuned</p>
-                    </div>
-                </div>
-            </label>
-            <input type="radio" name="slide" className="xD" id="c3" checked={selectedCard === 3} onChange={() => handleCardChange(3)} />
-            <label for="c3" class="card">
-                <div class="row">
-                    <div class="icon">3</div>
-                    <div class="description">
-                        <h4>Globalization</h4>
-                        <p>Help people all over the world</p>
-                    </div>
-                </div>
-            </label>
-            <input type="radio" name="slide" className="xD" id="c4" checked={selectedCard === 4} onChange={() => handleCardChange(4)}/>
-            <label for="c4" class="card">
-                <div class="row">
-                    <div class="icon">4</div>
-                    <div class="description">
-                        <h4>New technologies</h4>
-                        <p>Space engineering becomes
-                         more and more advanced</p>
+    <div className={`carousel ${isDarkMode ? 'bg-gradient-to-r from-[#121212] via-[#04101A] to-[#1a1625]' : 'd'}`}>
+            <h1 className="text-xl">Random offers</h1>
+            <div className="wrapper">
+                <div className="container">
+                    {offers.length > 0 && (
+                        <>
+                            <input type="radio" className="xD" name="slide" id="c1" checked={selectedCard === 1} onChange={() => handleCardChange(1)} />                     
+                            <label htmlFor="c1" className="card" style={{ backgroundImage: `url(${offers[0].item.img_link})`, backgroundSize: '70%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', border: '2px solid #fff' }}>    
+                                <div className="row">                  
+                                    <div className="icon">1</div>
+                                    <div className="description">
+                                        <h4>{offers[0].item.item_name}</h4>
+                                        <p>{offers[0].item.description}</p>
+                                    </div>
+                                </div>
+                            </label>
 
-                         <Link className='menuLink' to="/UserProfile"> User Profile </Link>
-                    </div>
+                            <input type="radio" name="slide" className="xD" id="c2" checked={selectedCard === 2} onChange={() => handleCardChange(2)} />
+                            <label htmlFor="c2" className="card" style={{ backgroundImage: `url(${offers[1].item.img_link})`, backgroundSize: '70%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', border: '2px solid #fff' }}>    
+                                <div className="row">
+                                    <div className="icon">2</div>
+                                    <div className="description">
+                                        <h4>{offers[1].item.item_name}</h4>
+                                        <p>{offers[1].item.description}</p>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <input type="radio" name="slide" className="xD" id="c3" checked={selectedCard === 3} onChange={() => handleCardChange(3)} />
+                            <label htmlFor="c3" className="card" style={{ backgroundImage: `url(${offers[2].item.img_link})`, backgroundSize: '70%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', border: '2px solid #fff' }}>    
+                                <div className="row">
+                                    <div className="icon">3</div>
+                                    <div className="description">
+                                        <h4>{offers[2].item.item_name}</h4>
+                                        <p>{offers[2].item.description}</p>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <input type="radio" name="slide" className="xD" id="c4" checked={selectedCard === 4} onChange={() => handleCardChange(4)} />
+                            <label htmlFor="c4" className="card" style={{ backgroundImage: `url(${offers[3].item.img_link})`, backgroundSize: '70%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', border: '2px solid #fff' }}>    
+                                <div className="row">
+                                    <div className="icon">4</div>
+                                    <div className="description">
+                                        <h4>{offers[3].item.item_name}</h4>
+                                        <p>{offers[3].item.description}</p>
+                                        
+                                    </div>
+                                </div>
+                            </label>
+                        </>
+                    )}
                 </div>
-            </label>
+            </div>
         </div>
-    </div>
-        
-    </div>
     </>
   );
 }

@@ -88,14 +88,14 @@ input[type="radio"]{
 }
 
 .card[for="c1"] {
-    background-color: #223;
+    color:white;
 }
 .card[for="c2"] {
-    background-color: rgb(14, 14, 150);
+    color:white;
 }
 .card[for="c3"] {
-    background-color: rgb(33, 136, 24);
+    color:white;
 }
 .card[for="c4"] {
-    background-color: rgb(158, 56, 31);
+    color:white;
 }
