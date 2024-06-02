@@ -85,8 +85,8 @@ const handleNewPriceChange = (e) => {
     }
 }
 
- const createOffer = async () => {
-    console.log(user.steam_id)
+const createOffer = async () => {
+    console.log(user.steam_id);
     await axios.post("http://localhost:8000/offers/", {
         "item": {
             "item_name": name,
@@ -106,14 +106,19 @@ const handleNewPriceChange = (e) => {
         headers: {
             Authorization: `Bearer ${localStorage.getItem("access")}`
         }
-    }).then((res) =>{ 
-        console.log("responsik:", res)
-        navigate("/market")
-    }).catch((err) => console.log("error:", err))
+    }).then((res) => {
+        console.log("responsik:", res);
+        navigate("/market");
+    }).catch((err) => {
+        if (err.response && err.response.status === 400) {
+            alert("This item is already in the market.");
+        } else {
+            console.log("error:", err);
+        }
+    });
+}
 
-  }
   
-
   const buyItem = () => {
     axios.post("http://localhost:8000/transactions/", {
         buyer: user.steam_id.toString(),
