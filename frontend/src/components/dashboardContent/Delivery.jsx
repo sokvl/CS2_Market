@@ -59,9 +59,10 @@ const Delivery = ({ ownerId }) => {
 
   const rateUser = async () => {
     try {
-      await axios.post(`http://localhost:8000/ratings/`, {
-        rating: stars,
-        transaction_id: selectedItem.transaction_id,
+      console.log(stars, selectedItem.transaction_id)
+      axios.post(`http://localhost:8000/transactions/ratings/`, {
+        stars: stars,
+        transaction: selectedItem.transaction_id
       }, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access")}`,
@@ -72,6 +73,7 @@ const Delivery = ({ ownerId }) => {
     } catch (error) {
       console.error('Error submitting rating:', error);
     }
+    window.location.reload();
   };
 
   

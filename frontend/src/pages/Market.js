@@ -136,7 +136,7 @@ export default function Market() {
                   ))}
                 </div> 
                 <hr className='py-4 mt-4'/>      
-                <h1 className='text-xl text-center pb-2'>Without condition </h1>
+                <h1 className='text-xl text-center pb-2'>Select condition </h1>
                 <div className="space-y-2">
                   {conditions.map((condition) => (
                     <label key={condition} className="flex items-center space-x-2">
