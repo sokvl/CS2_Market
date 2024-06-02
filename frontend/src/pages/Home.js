@@ -67,48 +67,48 @@ const Home = () => {
             <h1 className="text-xl">Random offers</h1>
             <div className="wrapper">
                 <div className="container">
-                    {offers.length > 0 && (
+                    {offers.length > 0 && false && (
                         <>
                             <input type="radio" className="xD" name="slide" id="c1" checked={selectedCard === 1} onChange={() => handleCardChange(1)} />                     
-                            <label htmlFor="c1" className="card" style={{ backgroundImage: `url(${offers[0].item.img_link})`, backgroundSize: '70%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', border: '2px solid #fff' }}>    
+                            <label htmlFor="c1" className="card" style={{ backgroundImage: `url(${offers[0].item?.img_link})`, backgroundSize: '70%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', border: '2px solid #fff' }}>    
                                 <div className="row">                  
                                     <div className="icon">1</div>
                                     <div className="description">
-                                        <h4>{offers[0].item.item_name}</h4>
-                                        <p>{offers[0].item.description}</p>
+                                        <h4>{offers[0].item?.item_name}</h4>
+                                        <p>{offers[0].item?.description}</p>
                                     </div>
                                 </div>
                             </label>
 
                             <input type="radio" name="slide" className="xD" id="c2" checked={selectedCard === 2} onChange={() => handleCardChange(2)} />
-                            <label htmlFor="c2" className="card" style={{ backgroundImage: `url(${offers[1].item.img_link})`, backgroundSize: '70%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', border: '2px solid #fff' }}>    
+                            <label htmlFor="c2" className="card" style={{ backgroundImage: `url(${offers[1].item?.img_link})`, backgroundSize: '70%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', border: '2px solid #fff' }}>    
                                 <div className="row">
                                     <div className="icon">2</div>
                                     <div className="description">
-                                        <h4>{offers[1].item.item_name}</h4>
-                                        <p>{offers[1].item.description}</p>
+                                        <h4>{offers[1].item?.item_name}</h4>
+                                        <p>{offers[1].item?.description}</p>
                                     </div>
                                 </div>
                             </label>
 
                             <input type="radio" name="slide" className="xD" id="c3" checked={selectedCard === 3} onChange={() => handleCardChange(3)} />
-                            <label htmlFor="c3" className="card" style={{ backgroundImage: `url(${offers[2].item.img_link})`, backgroundSize: '70%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', border: '2px solid #fff' }}>    
+                            <label htmlFor="c3" className="card" style={{ backgroundImage: `url(${offers[2].item?.img_link})`, backgroundSize: '70%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', border: '2px solid #fff' }}>    
                                 <div className="row">
                                     <div className="icon">3</div>
                                     <div className="description">
-                                        <h4>{offers[2].item.item_name}</h4>
-                                        <p>{offers[2].item.description}</p>
+                                        <h4>{offers[2].item?.item_name}</h4>
+                                        <p>{offers[2].item?.description}</p>
                                     </div>
                                 </div>
                             </label>
 
                             <input type="radio" name="slide" className="xD" id="c4" checked={selectedCard === 4} onChange={() => handleCardChange(4)} />
-                            <label htmlFor="c4" className="card" style={{ backgroundImage: `url(${offers[3].item.img_link})`, backgroundSize: '70%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', border: '2px solid #fff' }}>    
+                            <label htmlFor="c4" className="card" style={{ backgroundImage: `url(${offers[3].item?.img_link})`, backgroundSize: '70%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', border: '2px solid #fff' }}>    
                                 <div className="row">
                                     <div className="icon">4</div>
                                     <div className="description">
-                                        <h4>{offers[3].item.item_name}</h4>
-                                        <p>{offers[3].item.description}</p>
+                                        <h4>{offers[3].item?.item_name}</h4>
+                                        <p>{offers[3].item?.description}</p>
                                         
                                     </div>
                                 </div>

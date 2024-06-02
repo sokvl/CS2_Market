@@ -14,7 +14,7 @@ class User(AbstractUser):
         db_table = 'Users'
 
     def __str__(self):
-        return f'{self.username}'
+        return f'{self.username} id: {self.user_id}'
 
 
 class Wallet(models.Model):

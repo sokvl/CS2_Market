@@ -11,8 +11,8 @@ class TransactionDummy:
 def update_closed_date(sender, instance, **kwargs):
     if instance.is_closed and not instance.closed_date:
         instance.closed_date = timezone.now()
-        #print(instance.seller)
-        #payment_successful.send(sender=TransactionDummy, user=instance.seller, amount=instance.offer.price)
+        print(instance.seller)
+        payment_successful.send(sender=TransactionDummy, user=instance.seller.steam_id, amount=instance.offer.price)
 
 @receiver(post_save, sender=Transaction)
 def handle_transaction_save(sender, instance, created, **kwargs):
@@ -20,14 +20,13 @@ def handle_transaction_save(sender, instance, created, **kwargs):
         instance.offer.is_active = False
         instance.offer.save()
         print(instance.buyer)
-        #payment_successful.send(sender=TransactionDummy, user=instance.buyer, amount=-instance.offer.price)
+        payment_successful.send(sender=TransactionDummy, user=instance.buyer.steam_id, amount=-instance.offer.price)
 
 
         item = instance.offer.item
-        message = (f"Twój przedmiot {item.item_name} "
-                   f"{'w ilości: ' + str(instance.offer.quantity) if not item.condition else item.condition} został sprzedany! "
-                   f"Dostarcz przedmiot pod wskazany adres: {instance.buyer.steam_tradelink}, "
-                   f"a następnie potwierdź wysyłkę w panelu.")
+        message = (f"Your item {item.item_name} "
+                   f"{'Quantity: ' + str(instance.offer.quantity) if not item.condition else item.condition} has been sold! "
+                   f"Please, deliver to: {instance.buyer.steam_tradelink} ")
         
         Notification.objects.create(
             transaction=instance,
