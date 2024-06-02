@@ -19,16 +19,17 @@ const Home = () => {
         setSelectedCard(cardIndex);
     };
 
+    const fetchOffers = async () => {
+        try {
+            const response = await axios.get("http://localhost:8000/offers/");
+            const shuffledOffers = response.data.sort(() => 0.5 - Math.random());
+            setOffers(shuffledOffers.slice(0, 4));
+        } catch (error) {
+            console.log("Error fetching offers:", error);
+        }
+    };
+
     useEffect(() => {
-        const fetchOffers = async () => {
-            try {
-                const response = await axios.get("http://localhost:8000/offers/");
-                const shuffledOffers = response.data.sort(() => 0.5 - Math.random());
-                setOffers(shuffledOffers.slice(0, 4));
-            } catch (error) {
-                console.log("Error fetching offers:", error);
-            }
-        };
 
         fetchOffers();
     }, []);
@@ -64,10 +65,12 @@ const Home = () => {
         
     </div>
     <div className={`carousel ${isDarkMode ? 'bg-gradient-to-r from-[#121212] via-[#04101A] to-[#1a1625]' : 'd'}`}>
-            <h1 className="text-xl">Random offers</h1>
-            <div className="wrapper">
-                <div className="container">
-                    {offers.length > 0 && false && (
+    <h1 className="text-xl">Random offers</h1>
+    <div className="wrapper">
+        <div className="container">
+            {offers.length > 0 && (
+                <>
+                    {offers[0] && (
                         <>
                             <input type="radio" className="xD" name="slide" id="c1" checked={selectedCard === 1} onChange={() => handleCardChange(1)} />                     
                             <label htmlFor="c1" className="card" style={{ backgroundImage: `url(${offers[0].item?.img_link})`, backgroundSize: '70%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', border: '2px solid #fff' }}>    
@@ -79,7 +82,11 @@ const Home = () => {
                                     </div>
                                 </div>
                             </label>
+                        </>
+                    )}
 
+                    {offers[1] && (
+                        <>
                             <input type="radio" name="slide" className="xD" id="c2" checked={selectedCard === 2} onChange={() => handleCardChange(2)} />
                             <label htmlFor="c2" className="card" style={{ backgroundImage: `url(${offers[1].item?.img_link})`, backgroundSize: '70%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', border: '2px solid #fff' }}>    
                                 <div className="row">
@@ -90,7 +97,11 @@ const Home = () => {
                                     </div>
                                 </div>
                             </label>
+                        </>
+                    )}
 
+                    {offers[2] && (
+                        <>
                             <input type="radio" name="slide" className="xD" id="c3" checked={selectedCard === 3} onChange={() => handleCardChange(3)} />
                             <label htmlFor="c3" className="card" style={{ backgroundImage: `url(${offers[2].item?.img_link})`, backgroundSize: '70%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', border: '2px solid #fff' }}>    
                                 <div className="row">
@@ -101,7 +112,11 @@ const Home = () => {
                                     </div>
                                 </div>
                             </label>
+                        </>
+                    )}
 
+                    {offers[3] && (
+                        <>
                             <input type="radio" name="slide" className="xD" id="c4" checked={selectedCard === 4} onChange={() => handleCardChange(4)} />
                             <label htmlFor="c4" className="card" style={{ backgroundImage: `url(${offers[3].item?.img_link})`, backgroundSize: '70%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', border: '2px solid #fff' }}>    
                                 <div className="row">
@@ -109,15 +124,17 @@ const Home = () => {
                                     <div className="description">
                                         <h4>{offers[3].item?.item_name}</h4>
                                         <p>{offers[3].item?.description}</p>
-                                        
                                     </div>
                                 </div>
                             </label>
                         </>
                     )}
-                </div>
-            </div>
+                </>
+            )}
         </div>
+    </div>
+</div>
+
     </>
   );
 }
