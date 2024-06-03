@@ -6,11 +6,11 @@ import django_filters
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from api.signals import payment_successful
-
+from users.models import Wallet
 
 from .models import Transaction, Rating, Notification
 from .serializers import TransactionSerializer, RatingSerializer, NotificationSerializer
-
+from offers.models import Offer
     
 class TransatctionDummy:
     pass
@@ -30,12 +30,19 @@ class TransactionViewSet(viewsets.ModelViewSet):
                 request.data['buyer'] = user.user_id
             except get_user_model().DoesNotExist:
                 return Response({'error': 'User with this public_id does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if user.steam_tradelink is None:
+            return Response({'error': 'Provide steam trade link first!'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user_wallet = Wallet.objects.get(user_id=user.user_id)
+        if user_wallet.balance < Offer.objects.get(offer_id=request.data['offer']).price:
+            return Response({'error': 'Insufficient funds.'}, status=status.HTTP_400_BAD_REQUEST)
+
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-       #payment_successful.send(sender=TransatctionDummy, user=user, amount=-request.data['buyer'])
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])

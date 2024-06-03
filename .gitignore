@@ -6,5 +6,10 @@ backend/cs2market_backend/__pycache__/
 backend/api\__pycache__/
 backend/api\__pycache__//README.Docker.md
 
+backend/users/tests.py
+backend/api/tests.py
+backend/transactions/tests.py
+backend/offers/tests.py
+
 frontend/node_modules
 frontend/README.Docker.md
