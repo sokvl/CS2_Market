@@ -11,15 +11,13 @@ class TransactionDummy:
 def update_closed_date(sender, instance, **kwargs):
     if instance.is_closed and not instance.closed_date:
         instance.closed_date = timezone.now()
-        print(instance.seller)
-        payment_successful.send(sender=TransactionDummy, user=instance.seller.steam_id, amount=instance.offer.price)
+        payment_successful.send(sender=TransactionDummy, user=instance.offer.owner.steam_id, amount=instance.offer.price)
 
 @receiver(post_save, sender=Transaction)
 def handle_transaction_save(sender, instance, created, **kwargs):
     if created and instance.offer.is_active:
         instance.offer.is_active = False
         instance.offer.save()
-        print(instance.buyer)
         payment_successful.send(sender=TransactionDummy, user=instance.buyer.steam_id, amount=-instance.offer.price)
 
 

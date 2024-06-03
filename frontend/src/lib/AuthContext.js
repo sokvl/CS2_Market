@@ -76,7 +76,7 @@ export const AuthProvider = ({children}) => {
             setLogged(true)
         }
 
-        let timeInterval = 270000
+        let timeInterval = 3600000
 
         let interval =  setInterval(()=> {
             if(authTokens){
