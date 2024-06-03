@@ -255,32 +255,32 @@ const AdminPanel = ({steamid}) => {
                       <div className="loading">Loading&#8230;</div>
                     </>
                   ) : (
-                    <>
-                      <h1 className='text-3xl text-center mb-4'> Raport results</h1>
-                      <p className='text-xl text-center'>Users with average rating between {selectedStars} and {selectedStars2} <i className="fa-solid fa-star "></i></p>
-                      <table className="mt-8 w-full min-w-max table-auto text-left">
-                        <thead>
-                          <tr className='text-xl'>
-                            <th className="text-center">#</th>
-                            <th className="text-center">avatar</th>
-                            <th className="text-center">username</th>
-                            <th className="text-center">avg rating</th>
-                            <th className="text-center">no rates</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {raport1Data.map((user, i) => (
-                            <tr className='border-b' key={i}>
-                              <td className="text-center">{i+1}</td>
-                              <td className="text-center"><img src={user.avatar_url} alt="avatar" className="w-10 h-10 rounded-full mx-auto" /></td>
-                              <td className="text-center">{user.username}</td>
-                              <td className="text-center">{user.average_rating}</td>
-                              <td className="text-center">{user.number_of_ratings}</td>
+                    <div className='bg-[#1f1d24]'>
+                        <h1 className='text-3xl text-center mb-4'> Raport results</h1>
+                        <p className='text-xl text-center'>Users with average rating between {selectedStars} and {selectedStars2} <i className="fa-solid fa-star "></i></p>
+                        <table className="mt-8 w-full min-w-max table-auto text-left">
+                          <thead>
+                            <tr className='text-xl'>
+                              <th className="text-center">#</th>
+                              <th className="text-center">avatar</th>
+                              <th className="text-center">username</th>
+                              <th className="text-center">avg rating</th>
+                              <th className="text-center">no rates</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </>
+                          </thead>
+                          <tbody>
+                            {raport1Data.map((user, i) => (
+                              <tr className='border-b' key={i}>
+                                <td className="text-center">{i+1}</td>
+                                <td className="text-center"><img src={user.avatar_url} alt="avatar" className="w-10 h-10 rounded-full mx-auto" /></td>
+                                <td className="text-center">{user.username}</td>
+                                <td className="text-center">{user.average_rating}</td>
+                                <td className="text-center">{user.number_of_ratings}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                    </div>
                   )}
                 </div>
               </>
@@ -298,7 +298,7 @@ const AdminPanel = ({steamid}) => {
                                     <div className="loading">Loading&#8230;</div>
                                   </>
                                 ) : (
-                                  <>
+                                  <div className='bg-[#1f1d24]'>
                                     <p className='text-3xl text-center mb-4'> Raport2 results</p>
                                     <p className='text-xl text-center'>Transactions between {priceMin} and {priceMax} $ from {startDate} to {endDate} in category: {selectedCategory}</p>
                                     <table className="mt-8 w-full min-w-max table-auto text-left">
@@ -329,7 +329,7 @@ const AdminPanel = ({steamid}) => {
                                         <div className='p-2 text-center border rounded-xl w-28 h-28'> Quantity: <p className='mt-2'>{report21Data.quantity} transactions </p> </div>
                                         <div className='p-2 text-center border rounded-xl w-28 h-28'> Money spent: <p className='mt-2'>{report21Data.total_price} $</p> </div>
                                       </div>
-                                  </>
+                                  </div>
                                 )}
                               </div>
                             </>

@@ -41,7 +41,7 @@ const Auction = ({ id, title, offerActiveId, image, price, seed, condition, inve
         inventory={inventory}
       /> : <></>}
        <div
-        className={`flex flex-col bg-[#1f1d24] p-2 m-2 w-fit rounded-md shadow-xl transform transition duration-300 hover:scale-[115%] text-white hover:cursor-pointer ${
+        className={`flex flex-col bg-[#1f1d24] p-2 m-2 w-fit rounded-md shadow-xl transform transition duration-300 hover:scale-[107%] text-white hover:cursor-pointer ${
         isOwner && isMarketPage ? 'border border-green-500 hover:shadow-lg hover:shadow-green-500/40' : 'hover:shadow-md hover:shadow-indigo-300/20'}`} onClick={modalStateHandler}>
         <div className="flex flex-row border-t-2 border-r-2 border-l-2 w-fit border-[#3b3847]">
           <img src={image}

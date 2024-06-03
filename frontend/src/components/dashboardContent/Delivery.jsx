@@ -73,7 +73,7 @@ const Delivery = ({ ownerId }) => {
     } catch (error) {
       console.error('Error submitting rating:', error);
     }
-    window.location.reload();
+    fetchData();
   };
 
   

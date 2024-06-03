@@ -18,9 +18,7 @@ const UserDashboard = () => {
   const navigate = useNavigate()
   const { isDarkMode } = useTheme();
 
-  const { user } = useContext(AuthContext)
-
-  const [isAdmin, setIsAdmin] = useState(true);
+  const { user } = useContext(AuthContext);
 
   if (!user) {
     navigate('/')
@@ -28,6 +26,7 @@ const UserDashboard = () => {
 
   const [walletBalance, setWalletBalance] = useState({});
   const [tradeLink, setTradelink] = useState("Please provide tradelink!");
+  const [isAdmin, setIsAdmin] = useState(false);
   useEffect(() => {
     const getUserBalance = async () => {
       await axios.get(`http://localhost:8000/users/wallet/${user?.steam_id}/`)
@@ -40,7 +39,7 @@ const UserDashboard = () => {
        */
 
       await axios.get(`http://localhost:8000/users/${user?.steam_id}`)
-      .then(res => setTradelink(res.data.steam_tradelink))
+      .then(res => {setIsAdmin(res.data.is_admin); setTradelink(res.data.trade_link)})   
       .catch(err => console.log(err))
     }
     getUserBalance()
