@@ -3,6 +3,7 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 from django.core.wsgi import get_wsgi_application
+import sys
 
 load_dotenv()
 #Login
@@ -103,6 +104,13 @@ DATABASES = {
     }
 }
 
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
