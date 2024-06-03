@@ -84,7 +84,7 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
   const handleInput = (e) => {
     const value = e.target.value;
     const regex = /^[0-9]*\.?[0-9]{0,2}$/;
-
+    console.log(value)
     if (regex.test(value)) {
       e.target.value = value;
     } else {
