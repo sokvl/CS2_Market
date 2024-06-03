@@ -6,26 +6,24 @@ from rest_framework import status
 from .models import Offer, Item
 from api.serializers.Offer_serializer import OfferSerializer
 from api.serializers.Item_serializer import ItemSerializer
+from rest_framework.test import APITestCase, APIClient
+
+User = get_user_model()
 
 class OfferSerializerTest(TestCase):
     def setUp(self):
-        self.user = get_user_model().objects.create_user(username='test_user', password='test_password')
-        self.item = Item.objects.create(
-            item_name='Test Item',
-            img_link='http://example.com/test.jpg',
-            condition='N',
-            inspect='http://example.com/inspect',
-            rarity='Common',
-            category='Test',
-            listed=False,
-            tradeable=True
-        )
+        self.user = get_user_model().objects.create_user(username='test_user', password='test_password', steam_id='12345')
         self.offer_data = {
-            'owner': self.user.pk,
-            'creation_date': timezone.now(),
-            'sale_date': None,
+            'steam_id': self.user.steam_id,
             'is_active': True,
-            'item': self.item.pk, 
+            'item': {
+                'item_name': 'Test Item',
+                'img_link': 'http://example.com/test.jpg',
+                'condition': 'mw',
+                'inspect': 'http://example.com/inspect44',
+                'rarity': 'Common',
+                'category': 'Test',
+            },
             'price': 10.5,
             'quantity': 1
         }
@@ -36,7 +34,7 @@ class OfferSerializerTest(TestCase):
 
     def test_offer_serializer_invalid(self):
         invalid_data = self.offer_data.copy()
-        invalid_data['owner'] = None
+        invalid_data['steam_id'] = None
         serializer = OfferSerializer(data=invalid_data)
         self.assertFalse(serializer.is_valid())
 
@@ -45,13 +43,11 @@ class ItemSerializerTest(TestCase):
         self.item_data = {
             'item_name': 'Test Item',
             'img_link': 'http://example.com/test.jpg',
-            'condition': 'N',
+            'condition': 'mw',
             'stickerstring': None,
             'inspect': 'http://example.com/inspect',
             'rarity': 'Common',
             'category': 'Test',
-            'listed': False,
-            'tradeable': True
         }
 
     def test_item_serializer_valid(self):
@@ -64,11 +60,11 @@ class ItemSerializerTest(TestCase):
         serializer = ItemSerializer(data=invalid_data)
         self.assertFalse(serializer.is_valid())
 
-class OfferViewsTest(TestCase):
+class OfferViewsTest(APITestCase):
     def setUp(self):
-        self.client = Client()
-        self.user = get_user_model().objects.create_user(username='test_user', password='test_password')
-        self.client.force_login(self.user)
+        self.client = APIClient()
+        self.user = User.objects.create_user(username='test_user', password='test_password', steam_id='123456')
+        self.client.force_authenticate(user=self.user)
         self.item = Item.objects.create(
             item_name='Test Item',
             img_link='http://example.com/test.jpg',
@@ -81,62 +77,71 @@ class OfferViewsTest(TestCase):
         )
 
     def test_create_offer(self):
-        url = reverse('create_offer')
-        response = self.client.post(url, {
-            'owner': self.user.pk,
-            'creation_date': timezone.now(),
-            'sale_date': None,
+        url = reverse('offer-list')
+        data = {
+            'steam_id': self.user.steam_id,
             'is_active': True,
-            'item': self.item.pk, 
+            'item': {
+                'item_name': 'Test Item',
+                'img_link': 'http://example.com/test.jpg',
+                'condition': 'N',
+                'inspect': 'http://example.com/inspect22',
+                'rarity': 'Common',
+                'category': 'Test',
+                'listed': False,
+                'tradeable': True
+            },
             'price': 10.5,
             'quantity': 1
-        })
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
 
     def test_get_offer(self):
         offer = Offer.objects.create(
             owner=self.user,
             creation_date=timezone.now(),
-            sale_date=None,
             is_active=True,
-            item=self.item, 
+            item=self.item,
             price=10.5,
             quantity=1
         )
-        url = reverse('get_offer_by_id', kwargs={'offer_id': offer.pk})
+        url = reverse('offer-detail', kwargs={'pk': offer.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['price'], 10.5)
 
-class ItemViewsTest(TestCase):
-    def setUp(self):
-        self.client = Client()
-
-    def test_create_item(self):
-        url = reverse('create_item')
-        response = self.client.post(url, {
-            'item_name': 'Test Item',
-            'img_link': 'http://example.com/test.jpg',
-            'condition': 'N',
-            'stickerstring': None,
-            'inspect': 'http://example.com/inspect',
-            'rarity': 'Common',
-            'category': 'Test',
-            'listed': False,
-            'tradeable': True
-        })
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_get_item(self):
-        item = Item.objects.create(
-            item_name='Test Item',
-            img_link='http://example.com/test.jpg',
-            condition='N',
-            inspect='http://example.com/inspect',
-            rarity='Common',
-            category='Test',
-            listed=False,
-            tradeable=True
+    def test_update_offer(self):
+        offer = Offer.objects.create(
+            owner=self.user,
+            creation_date=timezone.now(),
+            is_active=True,
+            item=self.item,
+            price=10.5,
+            quantity=1
         )
-        url = reverse('get_item', kwargs={'item_id': item.pk})
-        response = self.client.get(url)
+        url = reverse('offer-detail', kwargs={'pk': offer.pk})
+        data = {
+            'price': 15.0,
+            'quantity': 2
+        }
+        response = self.client.patch(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        offer.refresh_from_db()
+        self.assertEqual(offer.price, 15.0)
+        self.assertEqual(offer.quantity, 2)
+
+    def test_delete_offer(self):
+        offer = Offer.objects.create(
+            owner=self.user,
+            creation_date=timezone.now(),
+            is_active=True,
+            item=self.item,
+            price=10.5,
+            quantity=1
+        )
+        url = reverse('offer-detail', kwargs={'pk': offer.pk})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Offer.objects.filter(pk=offer.pk).exists())
