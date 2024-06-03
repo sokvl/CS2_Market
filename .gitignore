@@ -12,6 +12,7 @@ backend/users/__pycache__
 backend/offers/migrations
 backend/transactions/migrations
 backend/users/migrations
+backend/
 
 
 frontend/node_modules

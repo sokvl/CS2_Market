@@ -100,53 +100,84 @@ const handleNewPriceChange = (e) => {
 }
 
 const createOffer = async () => {
-    console.log(user.steam_id);
-    await axios.post("http://localhost:8000/offers/", {
-        "item": {
-            "item_name": name,
-            "img_link": imageLink,
-            "condition": condition,
-            "stickerstring": stickerString,
-            "inspect": inspectLink,
-            "rarity": rarityColor,
-            "category": category,
-            "listed": true,
-            "tradeable": true
-        },
-        "price": parseFloat(inputValue),
-        "quantity": 1,
-        "steam_id": user.steam_id.toString()
+    try {
+        const res = await axios.post("http://localhost:8000/offers/", {
+            "item": {
+                "item_name": name,
+                "img_link": imageLink,
+                "condition": condition,
+                "stickerstring": stickerString,
+                "inspect": inspectLink,
+                "rarity": rarityColor,
+                "category": category,
+                "listed": true,
+                "tradeable": true
+            },
+            "price": parseFloat(inputValue),
+            "quantity": 1,
+            "steam_id": user.steam_id.toString()
+        }, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("access")}`
+            }
+        });
+
+        if (res.status === 200) {
+            console.log("responsik:", res);
+            navigate("/market");
+        } else {
+            alert(`Unexpected response status: ${res.status} - ${res.statusText}`);
+        }
+    } catch (err) {
+        if (err.response) {
+            if (err.response.status === 400) {
+                alert("This item is already in the market.");
+            } else {
+                alert(`Error: ${err.response.status} - ${err.response.data}`);
+            }
+        } else if (err.request) {
+            alert('Error: No response received from the server');
+        } else {
+            alert(`Error: ${err.message}`);
+        }
+        console.log("error:", err);
+    }
+}
+
+
+  
+const buyItem = () => {
+    axios.post("http://localhost:8000/transactions/", {
+        buyer: user.steam_id.toString(),
+        offer: offerAciveId,
     }, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem("access")}`
         }
-    }).then((res) => {
-        console.log("responsik:", res);
-        navigate("/market");
-    }).catch((err) => {
-        if (err.response && err.response.status === 400) {
-            alert("This item is already in the market.");
+    }).then(res => {
+        if (res.status === 200) {
+            setbuySuccess(true);
+            setTimeout(function() {
+                closerHandler(prev => !prev);
+            }, 5000);
         } else {
-            console.log("error:", err);
+            alert(`Unexpected response status: ${res.status} - ${res.statusText}`);
         }
+    }).catch(err => {
+        if (err.response) {
+            // Server responded with a status other than 2xx
+            alert(`Error: ${err.response.status} - ${err.response.data}`);
+        } else if (err.request) {
+            // Request was made but no response received
+            alert('Error: No response received from the server');
+        } else {
+            // Something else caused the error
+            alert(`Error: ${err.message}`);
+        }
+        console.log(err);
     });
 }
 
-  
-  const buyItem = () => {
-    axios.post("http://localhost:8000/transactions/", {
-        buyer: user.steam_id.toString(),
-        offer: offerAciveId,
-    },{ headers: {
-            Authorization: `Bearer ${localStorage.getItem("access")}`
-        }
-    }).then(res => {
-        setbuySuccess(true);
-        setTimeout(function() {
-            closerHandler(prev => !prev);
-          }, 5000);
-    }).catch(err => console.log(err))
-  }
 
     const editPrice = () => {
         try {
