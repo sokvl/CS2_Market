@@ -5,7 +5,14 @@ backend/cs2market_env/
 backend/cs2market_backend/__pycache__/
 backend/api\__pycache__/
 backend/api\__pycache__//README.Docker.md
-backend/
+backend/views/__pycache__
+backend/offers/__pycache__
+backend/transactions/__pycache__
+backend/users/__pycache__
+backend/offers/migrations
+backend/transactions/migrations
+backend/users/migrations
+
 
 frontend/node_modules
 frontend/README.Docker.md
