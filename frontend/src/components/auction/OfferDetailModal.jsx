@@ -72,11 +72,25 @@ const OfferDetailModal = ({closerHandler, category, rarityColor,
  }, [])
 
  const handleInputChange = (e) => {
-    const value = parseFloat(e.target.value, 10); // Przekształcenie wartości wejściowej na liczbę
+    const value = parseFloat(e.target.value);
 
-    if (value > 0)  // Sprawdzenie, czy wartość jest większa od 0
-        setinputValue(value); // Aktualizacja stanu, jeśli wartość jest poprawna
-}
+    if (!isNaN(value) && value > 0) {
+      setinputValue(value.toFixed(2)); // Ograniczenie do dwóch miejsc po przecinku
+    } else if (e.target.value === '') {
+      setinputValue(''); // Pozwól na wyczyszczenie pola
+    }
+  };
+
+  const handleInput = (e) => {
+    const value = e.target.value;
+    const regex = /^[0-9]*\.?[0-9]{0,2}$/;
+
+    if (regex.test(value)) {
+      e.target.value = value;
+    } else {
+      e.preventDefault();
+    }
+  };
 
 const handleNewPriceChange = (e) => {
     const value = parseFloat(e.target.value, 10); // Przekształcenie wartości wejściowej na liczbę
@@ -290,6 +304,7 @@ const createOffer = async () => {
                                         placeholder="Price"
                                         class="bg-[#242633] border-0 border-b-2 border-white text-white focus:outline-none focus:border-green-300 block mb-4 focus:ring-0"
                                         onChange={handleInputChange}
+                                        onInput={handleInput}
                                       /> : <></>}
                                 <button
                                     className={`bg-emerald-700 rounded-l p-2 px-16 mb-8 transition hover:bg-emerald-600 ${

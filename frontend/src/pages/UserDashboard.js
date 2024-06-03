@@ -20,7 +20,7 @@ const UserDashboard = () => {
 
   const { user } = useContext(AuthContext)
 
-  const [isAdmin, setIsAdmin] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   if (!user) {
     navigate('/')
@@ -40,7 +40,7 @@ const UserDashboard = () => {
        */
 
       await axios.get(`http://localhost:8000/users/${user?.steam_id}`)
-      .then(res => setTradelink(res.data.steam_tradelink))
+      .then(res => {setTradelink(res.data.steam_tradelink); setIsAdmin(res.data.is_admin)})
       .catch(err => console.log(err))
     }
     getUserBalance()
