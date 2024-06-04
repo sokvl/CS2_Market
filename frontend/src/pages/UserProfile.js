@@ -29,7 +29,6 @@ const UserProfile = () => {
           setProfileData(profileDataRequest.data);
           setRatingData(ratingData.data)
           setOffersData(offersData.data)
-          console.log(offersData.data)
 
         } catch (error) {
           console.error('Error fetching data:', error);
@@ -47,12 +46,14 @@ const UserProfile = () => {
                 <div className={`${isDarkMode ? 'bg-[#242633]' : 'bg-gradient-to-r from-blue-800 to-blue-900 text-white'} w-4/5 p-16 rounded-xl`}>
                   {isLoading ? <Spinner /> :
                   <>
-                  <div className="flex items-center justify-center text-sm ">
-                    <p className='text-3xl mr-2 text-zinc-200'> {ratingData.average_rating} </p> <i className="fa-solid fa-star "></i>
-                    <img src={profileData.avatar_url} className="mx-8 rounded-full border bg-black" width={200} height={200} alt="User Avatar" />
-                      <p className="text-3xl text-zinc-200">{profileData.username}</p>                
+                  <div className="flex text-sm bg-[#1a1625] p-4 rounded-xl">          
+                    <img src={profileData.avatar_url} className="mx-8 rounded-full border bg-black" width={128} height={128} alt="User Avatar" />
+                    <div className='flex flex-col justify-center '>
+                      <p className="text-3xl text-zinc-200 w-full">{profileData.username}</p> 
+                      <p className='text-3xl mt-2 text-zinc-200'> {ratingData.average_rating}  <i className="fa-solid fa-star "></i></p>                 
+                    </div>
                   </div>
-                  <p className='text-2xl mt-8 text-zinc-200'>User's offers</p>
+                  <p className='text-2xl mt-8 text-zinc-200 border-t-2 border-black py-2'>User's offers</p>
                   <div className='flex flex-wrap '>      
                       {offersData.map((auction, i) => (
                         <div key={i} className='min-w-fit'>

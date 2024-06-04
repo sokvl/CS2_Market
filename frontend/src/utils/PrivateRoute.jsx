@@ -4,7 +4,6 @@ import AuthContext from '../lib/AuthContext';
 
 const PrivateRoute = ({children, ...rest}) => {
     const { user } = useContext(AuthContext);
-    console.log(user)
     const authenticated = user ? true : false;
     return (
         <Routes >

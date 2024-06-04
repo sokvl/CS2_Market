@@ -40,10 +40,8 @@ const Auction = ({ id, title, image, price,seed, condition, target, rarityColor,
 
   const handleDelete = () => {
     
-    console.log("Auction deleted!");
     closeModal();
   };
-  console.log(cw)
   const createOffer = () => {
     axios.post("http://localhost:8001/offers/newOffer", {
       item: {

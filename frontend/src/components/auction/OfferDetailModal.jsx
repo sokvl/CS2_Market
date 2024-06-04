@@ -100,7 +100,6 @@ const handleNewPriceChange = (e) => {
 }
 
 const createOffer = async () => {
-    console.log(user.steam_id);
     await axios.post("http://localhost:8000/offers/", {
         "item": {
             "item_name": name,
@@ -121,7 +120,6 @@ const createOffer = async () => {
             Authorization: `Bearer ${localStorage.getItem("access")}`
         }
     }).then((res) => {
-        console.log("responsik:", res);
         navigate("/market");
     }).catch((err) => {
         if (err.response && err.response.status === 400) {
