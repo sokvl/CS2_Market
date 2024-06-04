@@ -7,11 +7,12 @@ backend/api\__pycache__/
 backend/api\__pycache__//README.Docker.md
 backend/views/__pycache__
 backend/offers/__pycache__
-backend/transactions/__pycache__
+backend/transactions/__pycache__/
 backend/users/__pycache__
 backend/offers/migrations
 backend/transactions/migrations
 backend/users/migrations
+backend/
 
 
 frontend/node_modules
