@@ -123,7 +123,6 @@ const createOffer = async () => {
         });
 
         if (res.status === 200) {
-            console.log("responsik:", res);
             navigate("/market");
         } else {
             alert(`Unexpected response status: ${res.status} - ${res.statusText}`);

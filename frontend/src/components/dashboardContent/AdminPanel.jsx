@@ -88,7 +88,6 @@ const AdminPanel = ({steamid}) => {
 
         axios.get(`http://localhost:8000/reports/rating/?min_rating=${selectedStars}&max_rating=${selectedStars2}`)
        .then((response) => {
-          console.log(response);
           setRaport1Data(response.data);
           setShowPopup(true);
           setIsLoading(true);
@@ -127,7 +126,6 @@ const AdminPanel = ({steamid}) => {
       axios.get(`http://localhost:8000/reports/transaction/?min_price=${priceMin}&max_price=${priceMax}&start_date=${startDate}&end_date=${endDate}&category=${selectedCategory}`)
       .then((response) => {
    
-         console.log(response.data.transaction_reports);
          setRaport2Data(response.data.transaction_reports);
          setReport21Data(response.data.total_transactions);
          setShowPopup(true);

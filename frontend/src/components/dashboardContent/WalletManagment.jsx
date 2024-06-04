@@ -9,7 +9,6 @@ const WalletManagment = ({walletOwner, balance}) => {
   const [inputValue, setinputValue] = useState('');
   const { isDarkMode } = useTheme();
 
-    console.log(walletOwner)
 
   if (walletOwner == null) {
     window.location.href = '/'

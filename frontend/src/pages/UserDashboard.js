@@ -23,7 +23,7 @@ const UserDashboard = () => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   if (!user) {
-    navigate('/')
+    window.location.href = '/'
   }
 
   const [walletBalance, setWalletBalance] = useState({});
@@ -34,10 +34,6 @@ const UserDashboard = () => {
       .then(res => setWalletBalance(res.data))
       .catch(err => console.log(err))
 
-      /**
-       * TODO:
-       * Have to customize responses, because two requests is too much..
-       */
 
       await axios.get(`http://localhost:8000/users/${user?.steam_id}`)
       .then(res => {setTradelink(res.data.steam_tradelink); setIsAdmin(res.data.is_admin)})

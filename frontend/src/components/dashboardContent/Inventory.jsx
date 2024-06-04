@@ -32,7 +32,6 @@ const Inventory = () => {
     };
 
     fetchData();
-    console.log("itemki", items)
 
   }, []);
 

@@ -34,7 +34,7 @@ export const AuthProvider = ({children}) => {
             let token_string = res.data.access.toString()
             localStorage.setItem("access", res.data.access)
             localStorage.setItem("refresh", res.data.refresh)
-            localStorage.setItem("timeStamp", now.setMinutes(now.getMinutes() + 5))
+            localStorage.setItem("timeStamp", now.setMinutes(now.getMinutes() + 20))
             setUser(jwtDecode(token_string))
         } else {
             alert("Login unsuccesful.")

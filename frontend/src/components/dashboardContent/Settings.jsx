@@ -1,7 +1,9 @@
 
-import React, {useState} from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 import axios from 'axios';
 import {useTheme} from '../../ThemeContext';
+import AuthContext from '../../lib/AuthContext';
+
 
 const Settings = ({tl, steamid}) => {
 
@@ -10,11 +12,15 @@ const Settings = ({tl, steamid}) => {
     const [notifications, setNotifications] = useState([])
     const [reloadState, setreloadState] = useState(false);
     let color = "#FFFFFF"
-
+    const { user } = useContext(AuthContext);
+    
         
-    if (!steamid) {
-        window.location.href = '/'
-    }
+    useEffect(() => {
+        if (!user) {
+            window.location.href = '/'
+        }
+    }, [])
+    
 
     const inputHandler = (e) => {
         setinputValue(e.target.value);

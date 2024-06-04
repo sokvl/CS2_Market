@@ -25,7 +25,6 @@ const Delivery = ({ ownerId }) => {
           Authorization: `Bearer ${localStorage.getItem("access")}`
         }
       });
-      console.log(data.data.waiting_to_get);
       setPending(data.data.to_send);
       setWaiting(data.data.waiting_to_get);
     } catch (error) {
@@ -59,7 +58,6 @@ const Delivery = ({ ownerId }) => {
 
   const rateUser = async () => {
     try {
-      console.log(stars, selectedItem.transaction_id)
       axios.post(`http://localhost:8000/transactions/ratings/`, {
         stars: stars,
         transaction: selectedItem.transaction_id
