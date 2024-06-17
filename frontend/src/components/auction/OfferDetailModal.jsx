@@ -122,7 +122,7 @@ const createOffer = async () => {
             }
         });
 
-        if (res.status === 200) {
+        if (res.status === 201) {
             navigate("/market");
         } else {
             alert(`Unexpected response status: ${res.status} - ${res.statusText}`);

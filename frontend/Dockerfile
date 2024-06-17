@@ -1,32 +1,29 @@
+# Dockerfile dla React (frontend)
+FROM node:14 as build
 
+WORKDIR /app
 
-
-ARG NODE_VERSION=18.16.1
-
-FROM node:${NODE_VERSION}
-
-ENV NODE_ENV="development"
-
-WORKDIR /usr/src/app
 COPY package.json package-lock.json ./
 
 ENV NPM_CONFIG_CACHE=/usr/src/app/.npm-cache
 ENV PATH /app/node_modules/.bin:$PATH
+ENV NODE_ENV=production
 
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=package-lock.json,target=package-lock.json \
-    --mount=type=cache,target=/root/.npm \
-    --mount=type=cache,target=/usr/src/app/.npm-cache 
-
-RUN npm ci 
-RUN chown -R node:node /usr/src/app
-RUN npm install nodemon --save-dev
-USER node
+RUN --mount=type=cache,target=/root/.npm \
+    --mount=type=cache,target=/usr/src/app/.npm-cache \
+    npm ci \
+    npm install @stripe/stripe-js 
 
 COPY . .
+RUN npm run build
 
-EXPOSE 3000
+FROM nginx:alpine
 
+RUN rm -rf /usr/share/nginx/html/*
+COPY --from=build /app/build /usr/share/nginx/html
 
-CMD npm start --host 0.0.0.0 --port 3000 --disableHostCheck true
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

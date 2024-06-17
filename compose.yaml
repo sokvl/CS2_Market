@@ -1,20 +1,50 @@
 version: '3.8'
 
 services:
-  backend:
-    build: ./backend
+  django:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     volumes:
       - ./backend:/app
     ports:
-      - "8000:8000" # Zakładając, że backend działa na porcie 8000
+      - "8000:8000"
+    env_file:
+      - .env
+    networks:
+      - webnet
 
-  frontend:
-    build: ./frontend
-    volumes:
-      - ./frontend:/app
+  react:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3000:80"
     stdin_open: true
     tty: true
     environment:
        - CHOKIDAR_USEPOLLING=true
+    networks:
+      - webnet
+
+  stripe:
+    image: stripe/stripe-cli:v1.19.4
+    command: listen --forward-to django:8000/web_hook/
+    environment:
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_ENDPOINT_SECRET}
+      - XDG_DATA_HOME=/tmp/.stripe-data
+      - XDG_CONFIG_HOME=/tmp/.stripe-config
+    volumes:
+      - stripe-data:/tmp/.stripe-data
+      - stripe-config:/tmp/.stripe-config
+    depends_on:
+      - django
+    networks:
+      - webnet
+
+networks:
+  webnet:
+
+volumes:
+  stripe-data:
+  stripe-config:

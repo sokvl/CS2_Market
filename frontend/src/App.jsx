@@ -20,6 +20,9 @@ function App() {
   return ( 
     
     <div className='App'>
+        <scripts>
+            <script src="https://js.stripe.com/v3/"></script>
+        </scripts>
         <AppStateProvider>
             <AuthProvider>
                 <ThemeProvider>
