@@ -30,15 +30,11 @@ data.
 
 ## Running locally
 
-Configure .env file first.
+Configure .env file using steamwebapi and stripe api.
 Then in main repository folder.
 ```sh
 docker compose up
 ```
+Finally, authorize using link in stripe container.
 
-Without Docker
-```sh
-cd frontend && npm start
-cd ../backend && python manage.py runserver
-```
 

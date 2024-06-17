@@ -58,5 +58,5 @@ def steam_login_callback(request):
     
 
 def steam_bridge(request):
-    response = redirect('http://localhost:3001/auth_success')
+    response = redirect('http://localhost:3000/auth_success')
     return response
